@@ -6,7 +6,7 @@ description = "An API to talk to GCM (Google Cloud Messaging) in Rust"
 license = "MIT"
 homepage = "https://github.com/panicbit/fcm-rust"
 repository = "https://github.com/panicbit/fcm-rust"
-#documentation = "http://vishy1618.github.io/gcm/gcm/"
+documentation = "https://panicbit.github.io/fcm-rust/fcm/"
 keywords = ["fcm", "firebase", "gcm", "cloud", "messaging", "android", "ios"]
 
 [dependencies]
