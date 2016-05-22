@@ -1,7 +1,7 @@
 [package]
 name = "fcm"
 version = "0.1.4"
-authors = ["Suvish Varghese Thoovamalayil <vishy1618@gmail.com>"]
+authors = ["Suvish Varghese Thoovamalayil <vishy1618@gmail.com>", "panicbit <panicbit.dev@gmail.com>"]
 description = "An API to talk to GCM (Google Cloud Messaging) in Rust"
 license = "MIT"
 homepage = "https://github.com/vishy1618/gcm"
