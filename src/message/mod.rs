@@ -6,7 +6,6 @@ pub use message::response::*;
 use notification::Notification;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
-use std::str;
 use std::io::prelude::*;
 use hyper::Client;
 use hyper::header::{Authorization, ContentType};
