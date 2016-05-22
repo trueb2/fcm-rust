@@ -221,7 +221,7 @@ impl <'a> Message<'a> {
     ///     .data(map)
     ///     .send("<FCM API Key>");
     /// ```
-    pub fn send(self, api_key: &'a str) -> Result<response::GcmResponse, response::GcmError> {
+    pub fn send(self, api_key: &'a str) -> Result<response::FcmResponse, response::FcmError> {
         let payload = self.to_json().to_string();
         let auth_header = "key=".to_string() + api_key;
         let client = Client::new();
@@ -246,16 +246,16 @@ impl <'a> Message<'a> {
         }
     }
 
-    fn parse_response(status: StatusCode, body: &str) -> Result<response::GcmResponse, response::GcmError> {
+    fn parse_response(status: StatusCode, body: &str) -> Result<response::FcmResponse, response::FcmError> {
         use hyper::status::StatusCode::*;
         use hyper::status::StatusClass::ServerError;
         match status {
             Ok => Result::Ok(json::decode(body).unwrap()),
-            Unauthorized => Err(response::GcmError::Unauthorized),
-            BadRequest => Err(response::GcmError::InvalidMessage(body.to_string())),
+            Unauthorized => Err(response::FcmError::Unauthorized),
+            BadRequest => Err(response::FcmError::InvalidMessage(body.to_string())),
             _ => match status.class() {
-                ServerError => Err(response::GcmError::ServerError),
-                _ => Err(response::GcmError::InvalidMessage("Unknown Error".to_string())),
+                ServerError => Err(response::FcmError::ServerError),
+                _ => Err(response::FcmError::InvalidMessage("Unknown Error".to_string())),
             }
         }
     }

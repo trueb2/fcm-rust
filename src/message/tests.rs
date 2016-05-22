@@ -1,5 +1,5 @@
 use {Message, Priority};
-use GcmError;
+use FcmError;
 use notification::NotificationBuilder;
 use std::collections::HashMap;
 use hyper::status::StatusCode;
@@ -141,7 +141,7 @@ fn should_parse_error_as_unauthorized() {
     let result = Message::parse_response(StatusCode::Unauthorized, "Unauthorized");
 
     assert!(result.is_err());
-    assert_eq!(result.err().unwrap(), GcmError::Unauthorized);
+    assert_eq!(result.err().unwrap(), FcmError::Unauthorized);
 }
 
 #[test]
@@ -150,7 +150,7 @@ fn should_parse_error_as_invalid_message() {
 
     assert!(result.is_err());
     assert_eq!(result.err().unwrap(), 
-    GcmError::InvalidMessage("INVALID_REGISTRATION".to_string()));
+    FcmError::InvalidMessage("INVALID_REGISTRATION".to_string()));
 }
 
 #[test]
@@ -158,7 +158,7 @@ fn should_parse_error_as_server_error() {
     let result = Message::parse_response(StatusCode::InternalServerError, "Internal Server Error");
 
     assert!(result.is_err());
-    assert_eq!(result.err().unwrap(), GcmError::ServerError);
+    assert_eq!(result.err().unwrap(), FcmError::ServerError);
 }
 
 #[test]

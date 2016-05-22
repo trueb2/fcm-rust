@@ -1,5 +1,5 @@
 #[derive(RustcDecodable, Debug)]
-pub struct GcmResponse {
+pub struct FcmResponse {
     pub message_id: Option<u64>,
     pub error: Option<String>,
     pub multicast_id: Option<i64>,
@@ -17,6 +17,6 @@ pub struct MessageResult {
 }
 
 #[derive(PartialEq, Debug)]
-pub enum GcmError {
+pub enum FcmError {
     Unauthorized, InvalidMessage(String), ServerError
 }

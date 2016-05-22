@@ -76,5 +76,5 @@ pub use message::*;
 mod notification;
 pub use notification::*;
 
-pub use message::response::GcmError as Error;
+pub use message::response::FcmError as Error;
 
