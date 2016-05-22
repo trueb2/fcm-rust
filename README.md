@@ -18,7 +18,7 @@ extern crate fcm;
 
 ## Examples:
  
-Here is an example to send out a GCM Message with some custom data:
+Here is an example to send out a FCM Message with some custom data:
  
 ```rust
 use fcm::Message;
@@ -29,10 +29,10 @@ map.insert("message", "Howdy!");
 
 let result = Message::new("<registration id>")
     .data(map)
-    .send("<GCM API Key>");
+    .send("<FCM API Key>");
 ```
 
-To send a message using GCM Notifications, we first build the notification:
+To send a message using FCM Notifications, we first build the notification:
 
 ```rust
 use fcm::{Message, NotificationBuilder};
@@ -47,7 +47,7 @@ And then set it in the message, before sending it:
 ```rust
 let result = Message::new("<registration id>")
     .notification(notification)
-    .send("<GCM API Key>");
+    .send("<FCM API Key>");
 ```
 
 You can now handle the result accordingly:

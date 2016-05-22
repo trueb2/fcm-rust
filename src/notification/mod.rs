@@ -4,9 +4,9 @@ mod tests;
 use std::collections::BTreeMap;
 use rustc_serialize::json::{ToJson, Json};
 
-/// This struct represents a GCM notification. Use the 
+/// This struct represents a FCM notification. Use the 
 /// corresponding `NotificationBuilder` to get an instance. You can then use 
-/// this notification instance when sending a GCM message.
+/// this notification instance when sending a FCM message.
 #[derive(Debug, PartialEq, Clone)]
 pub struct Notification<'a> {
     title: &'a str,

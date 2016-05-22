@@ -18,7 +18,7 @@
 //!
 //! # Examples:
 //! 
-//! Here is an example to send out a GCM Message with some custom data:
+//! Here is an example to send out a FCM Message with some custom data:
 //! 
 //! ```no_run
 //! use fcm::Message;
@@ -29,10 +29,10 @@
 //! 
 //! let result = Message::new("<registration id>")
 //!     .data(map)
-//!     .send("<GCM API Key>");
+//!     .send("<FCM API Key>");
 //! ```
 //!
-//! To send a message using GCM Notifications, we first build the notification:
+//! To send a message using FCM Notifications, we first build the notification:
 //! 
 //! ```rust
 //! use fcm::{Message, NotificationBuilder};
@@ -50,7 +50,7 @@
 //! #     .finalize();
 //! let result = Message::new("<registration id>")
 //!     .notification(notification)
-//!     .send("<GCM API Key>");
+//!     .send("<FCM API Key>");
 //! ```
 //! You can now handle the result accordingly:
 //!
@@ -61,7 +61,7 @@
 //! #     .finalize();
 //! # let result = Message::new("<registration id>")
 //! #     .notification(notification)
-//! #     .send("<GCM API Key>");
+//! #     .send("<FCM API Key>");
 //! match result {
 //!   Ok(response) => println!("message_id: {:?}", response.message_id),
 //!   Err(error) => println!("Error: {:?}", error),

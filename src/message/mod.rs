@@ -18,7 +18,7 @@ pub enum Priority {
     Normal, High
 }
 
-/// Represents a GCM message. Construct the GCM message 
+/// Represents a FCM message. Construct the FCM message 
 /// using various utility methods and finally send it.
 /// # Examples:
 /// ```rust
@@ -150,7 +150,7 @@ impl <'a> Message<'a> {
         self
     }
 
-    /// How long (in seconds) to keep the message on GCM servers in case the device 
+    /// How long (in seconds) to keep the message on FCM servers in case the device 
     /// is offline. The maximum and default is 4 weeks.
     pub fn time_to_live(mut self, time_to_live: i32) -> Message<'a> {
         self.time_to_live = Some(time_to_live);
@@ -163,7 +163,7 @@ impl <'a> Message<'a> {
         self
     }
 
-    /// When set to `true`, allows you to test GCM without actually sending the message.
+    /// When set to `true`, allows you to test FCM without actually sending the message.
     pub fn dry_run(mut self, dry_run: bool) -> Message<'a> {
         self.dry_run = Some(dry_run);
         self
@@ -208,7 +208,7 @@ impl <'a> Message<'a> {
         self
     }
 
-    /// Send the message using your GCM API Key.
+    /// Send the message using your FCM API Key.
     /// # Examples:
     /// ```no_run
     /// use fcm::Message;
@@ -219,7 +219,7 @@ impl <'a> Message<'a> {
     /// 
     /// let result = Message::new("<registration id>")
     ///     .data(map)
-    ///     .send("<GCM API Key>");
+    ///     .send("<FCM API Key>");
     /// ```
     pub fn send(self, api_key: &'a str) -> Result<response::GcmResponse, response::GcmError> {
         let payload = self.to_json().to_string();
