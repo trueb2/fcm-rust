@@ -6,7 +6,7 @@
 [![Crates.io License](https://img.shields.io/crates/l/fcm.svg?style=flat-square)][crates.io]
 
 [crates.io]: https://crates.io/crates/fcm
-[travis]: https://github.com/panicbit/fcm-rust
+[travis]: https://travis-ci.org/panicbit/fcm-rust
 [coveralls]: https://coveralls.io/github/panicbit/fcm-rust
 
 
