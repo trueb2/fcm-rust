@@ -16,7 +16,7 @@ Add this to `Cargo.toml`:
 
 ```rust
 [dependencies]
-fcm = "0.1.4"
+fcm = "0.1.0"
 ```
 
 then add this to your crate root:
