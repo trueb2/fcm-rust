@@ -7,7 +7,10 @@ use notification::Notification;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 use std::str;
-use curl::http;
+use std::io::prelude::*;
+use hyper::Client;
+use hyper::header::{Authorization, ContentType};
+use hyper::status::StatusCode;
 use rustc_serialize::json::{self, Json, ToJson};
 
 #[derive(PartialEq, Debug, Clone)]
@@ -221,39 +224,39 @@ impl <'a> Message<'a> {
   pub fn send(self, api_key: &'a str) -> Result<response::GcmResponse, response::GcmError> {
     let payload = self.to_json().to_string();
     let auth_header = "key=".to_string() + api_key;
-    let res;
-    let body;
-    let code;
+    let client = Client::new();
 
-    let result = http::handle()
-        .post("https://fcm.googleapis.com/fcm/send", &payload)
-        .header("Authorization", &auth_header)
-        .header("Content-Type", "application/json")
-        .exec();
+    let response = client
+        .post("https://fcm.googleapis.com/fcm/send")
+        .body(&payload)
+        .header(Authorization(auth_header))
+        .header(ContentType::json())
+        .send();
 
-    match result {
-      Ok(unwrapped) => {
-        res = unwrapped;
-        body = str::from_utf8(res.get_body()).unwrap();
-        code = res.get_code();
+    match response {
+      Ok(mut response) => {
+        let mut body = String::new();
+        response.read_to_string(&mut body).unwrap();
 
-        Message::parse_response(code, body)
+        Message::parse_response(response.status, &body)
       },
       Err(_) => {
-        Message::parse_response(500, "Server Error")
+        Message::parse_response(StatusCode::InternalServerError, "Server Error")
       }
     }
   }
 
-  fn parse_response(status: u32, body: &str) -> Result<response::GcmResponse, response::GcmError> {
+  fn parse_response(status: StatusCode, body: &str) -> Result<response::GcmResponse, response::GcmError> {
+    use hyper::status::StatusCode::*;
+    use hyper::status::StatusClass::ServerError;
     match status {
-      200 => {
-        Ok(json::decode(body).unwrap())
-      },
-      401 => Err(response::GcmError::Unauthorized),
-      400 => Err(response::GcmError::InvalidMessage(body.to_string())),
-      500...599 => Err(response::GcmError::ServerError),
-      _ => Err(response::GcmError::InvalidMessage("Unknown Error".to_string())),
+      Ok => Result::Ok(json::decode(body).unwrap()),
+      Unauthorized => Err(response::GcmError::Unauthorized),
+      BadRequest => Err(response::GcmError::InvalidMessage(body.to_string())),
+      _ => match status.class() {
+        ServerError => Err(response::GcmError::ServerError),
+        _ => Err(response::GcmError::InvalidMessage("Unknown Error".to_string())),
+      }
     }
   }
 }

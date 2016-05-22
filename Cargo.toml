@@ -11,4 +11,4 @@ keywords = ["fcm", "firebase", "gcm", "cloud", "messaging", "android", "ios"]
 
 [dependencies]
 rustc-serialize = "0.3.19"
-curl = "0.2.19"
+hyper = "0.9.5"
