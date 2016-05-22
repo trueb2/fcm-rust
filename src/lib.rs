@@ -69,7 +69,7 @@
 //! ```
 
 extern crate rustc_serialize;
-extern crate curl;
+extern crate hyper;
 
 mod message;
 pub use message::*;
