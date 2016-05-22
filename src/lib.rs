@@ -68,6 +68,8 @@
 //! }
 //! ```
 
+extern crate rustc_serialize;
+extern crate curl;
 
 mod message;
 pub use message::*;
@@ -76,5 +78,3 @@ pub use notification::*;
 
 pub use message::response::GcmError as Error;
 
-extern crate rustc_serialize;
-extern crate curl;
