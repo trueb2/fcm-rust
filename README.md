@@ -1,4 +1,4 @@
-gcm
+fcm
 ===
 
 ## Usage
@@ -7,13 +7,13 @@ Add this to `Cargo.toml`:
 
 ```rust
 [dependencies]
-gcm = "0.1.4"
+fcm = "0.1.4"
 ```
 
 then add this to your crate root:
 
 ```rust
-extern crate gcm;
+extern crate fcm;
 ```
 
 ## Examples:
@@ -21,7 +21,7 @@ extern crate gcm;
 Here is an example to send out a GCM Message with some custom data:
  
 ```rust
-use gcm::Message;
+use fcm::Message;
 use std::collections::HashMap;
 
 let mut map = HashMap::new();
@@ -35,7 +35,7 @@ let result = Message::new("<registration id>")
 To send a message using GCM Notifications, we first build the notification:
 
 ```rust
-use gcm::{Message, NotificationBuilder};
+use fcm::{Message, NotificationBuilder};
 
 let notification = NotificationBuilder::new("Hey!")
     .body("Do you want to catch up later?")

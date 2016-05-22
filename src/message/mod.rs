@@ -22,7 +22,7 @@ pub enum Priority {
 /// using various utility methods and finally send it.
 /// # Examples:
 /// ```rust
-/// use gcm::Message;
+/// use fcm::Message;
 /// 
 /// let message = Message::new("<registration id>").dry_run(true);
 /// ```
@@ -128,7 +128,7 @@ impl <'a> Message<'a> {
     /// Set the priority of the message. You can set Normal or High priorities.
     /// # Examples:
     /// ```rust
-    /// use gcm::{Message, Priority};
+    /// use fcm::{Message, Priority};
     /// 
     /// let message = Message::new("<registration id>")
     ///     .priority(Priority::High);
@@ -173,7 +173,7 @@ impl <'a> Message<'a> {
     /// must be handled appropriately on the client end.
     /// # Examples:
     /// ```rust
-    /// use gcm::Message;
+    /// use fcm::Message;
     /// use std::collections::HashMap;
     ///
     /// let mut map = HashMap::new();
@@ -194,7 +194,7 @@ impl <'a> Message<'a> {
     /// Use this to set a `Notification` for the message.
     /// # Examples:
     /// ```rust
-    /// use gcm::{Message, NotificationBuilder};
+    /// use fcm::{Message, NotificationBuilder};
     ///
     /// let notification = NotificationBuilder::new("Hey!")
     ///     .body("Do you want to catch up later?")
@@ -211,7 +211,7 @@ impl <'a> Message<'a> {
     /// Send the message using your GCM API Key.
     /// # Examples:
     /// ```no_run
-    /// use gcm::Message;
+    /// use fcm::Message;
     /// use std::collections::HashMap;
     ///
     /// let mut map = HashMap::new();

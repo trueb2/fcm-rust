@@ -1,4 +1,4 @@
-//! gcm
+//! fcm
 //! ===
 //!
 //! # Usage:
@@ -7,13 +7,13 @@
 //!
 //! ```ignore
 //! [dependencies]
-//! gcm = "0.1.4"
+//! fcm = "0.1.4"
 //! ```
 //!
 //! then add this to your crate root:
 //!
 //! ```ignore
-//! extern crate gcm;
+//! extern crate fcm;
 //! ```
 //!
 //! # Examples:
@@ -21,7 +21,7 @@
 //! Here is an example to send out a GCM Message with some custom data:
 //! 
 //! ```no_run
-//! use gcm::Message;
+//! use fcm::Message;
 //! use std::collections::HashMap;
 //!
 //! let mut map = HashMap::new();
@@ -35,7 +35,7 @@
 //! To send a message using GCM Notifications, we first build the notification:
 //! 
 //! ```rust
-//! use gcm::{Message, NotificationBuilder};
+//! use fcm::{Message, NotificationBuilder};
 //!
 //! let notification = NotificationBuilder::new("Hey!")
 //!     .body("Do you want to catch up later?")
@@ -44,7 +44,7 @@
 //! And then set it in the message, before sending it:
 //! 
 //! ```no_run
-//! # use gcm::{Message, NotificationBuilder};
+//! # use fcm::{Message, NotificationBuilder};
 //! # let notification = NotificationBuilder::new("Hey!")
 //! #     .body("Do you want to catch up later?")
 //! #     .finalize();
@@ -55,7 +55,7 @@
 //! You can now handle the result accordingly:
 //!
 //! ```no_run
-//! # use gcm::{Message, NotificationBuilder};
+//! # use fcm::{Message, NotificationBuilder};
 //! # let notification = NotificationBuilder::new("Hey!")
 //! #     .body("Do you want to catch up later?")
 //! #     .finalize();
