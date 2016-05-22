@@ -226,7 +226,7 @@ impl <'a> Message<'a> {
     let code;
 
     let result = http::handle()
-        .post("https://gcm-http.googleapis.com/gcm/send", &payload)
+        .post("https://fcm.googleapis.com/fcm/send", &payload)
         .header("Authorization", &auth_header)
         .header("Content-Type", "application/json")
         .exec();
