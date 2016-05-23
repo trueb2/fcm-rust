@@ -247,7 +247,6 @@ impl <'a> Message<'a> {
 
     fn parse_response(status: StatusCode, body: &str) -> Result<response::FcmResponse, response::FcmError> {
         use hyper::status::StatusCode::*;
-        use hyper::status::StatusClass::ServerError;
         match status {
             Ok =>
                 Result::Ok(json::decode(body).unwrap()),
