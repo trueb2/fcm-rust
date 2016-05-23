@@ -249,13 +249,16 @@ impl <'a> Message<'a> {
         use hyper::status::StatusCode::*;
         use hyper::status::StatusClass::ServerError;
         match status {
-            Ok => Result::Ok(json::decode(body).unwrap()),
-            Unauthorized => Err(response::FcmError::Unauthorized),
-            BadRequest => Err(response::FcmError::InvalidMessage(body.to_string())),
-            _ => match status.class() {
-                ServerError => Err(response::FcmError::ServerError),
-                _ => Err(response::FcmError::InvalidMessage("Unknown Error".to_string())),
-            }
+            Ok =>
+                Result::Ok(json::decode(body).unwrap()),
+            Unauthorized =>
+                Err(response::FcmError::Unauthorized),
+            BadRequest =>
+                Err(response::FcmError::InvalidMessage(body.to_string())),
+            status if status.is_server_error() =>
+                Err(response::FcmError::ServerError),
+            _ =>
+                Err(response::FcmError::InvalidMessage("Unknown Error".to_string())),
         }
     }
 }
