@@ -14,7 +14,7 @@ fn should_parse_error_as_invalid_message() {
     let result = Client::parse_response(StatusCode::BadRequest, "INVALID_REGISTRATION");
 
     assert!(result.is_err());
-    assert_eq!(result.err().unwrap(),
+    assert_eq!(result.err().unwrap(), 
     FcmError::InvalidMessage("INVALID_REGISTRATION".to_string()));
 }
 
@@ -33,8 +33,8 @@ fn should_parse_successful_response() {
             "message_id": 2000000,
             "results": [
                 {
-                    "message_id": 200000,
-                    "registration_id": 200000,
+                    "message_id": "asdf",
+                    "registration_id": "qwerty",
                     "error": "error"
                 }
             ]

@@ -133,4 +133,3 @@ fn should_set_notifications() {
 
     assert!(msg.notification != None);
 }
-

@@ -11,8 +11,8 @@ pub struct FcmResponse {
 
 #[derive(RustcDecodable, Debug)]
 pub struct MessageResult {
-    pub message_id: Option<u64>,
-    pub registration_id: Option<u64>,
+    pub message_id: Option<String>,
+    pub registration_id: Option<String>,
     pub error: Option<String>
 }
 
