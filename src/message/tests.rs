@@ -168,8 +168,8 @@ fn should_parse_successful_response() {
             "message_id": 2000000,
             "results": [
                 {
-                    "message_id": 200000,
-                    "registration_id": 200000,
+                    "message_id": "asdf",
+                    "registration_id": "qwerty",
                     "error": "error"
                 }
             ]
