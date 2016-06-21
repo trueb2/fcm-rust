@@ -1,16 +1,10 @@
 #[cfg(test)]
 mod tests;
-pub mod response;
 
-pub use message::response::*;
 use notification::Notification;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
-use std::io::prelude::*;
-use hyper::Client;
-use hyper::header::{Authorization, ContentType};
-use hyper::status::StatusCode;
-use rustc_serialize::json::{self, Json, ToJson};
+use rustc_serialize::json::{Json, ToJson};
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Priority {
@@ -205,59 +199,5 @@ impl <'a> Message<'a> {
     pub fn notification(mut self, notification: Notification<'a>) -> Message<'a> {
         self.notification = Some(notification);
         self
-    }
-
-    /// Send the message using your FCM API Key.
-    /// # Examples:
-    /// ```no_run
-    /// use fcm::Message;
-    /// use std::collections::HashMap;
-    ///
-    /// let mut map = HashMap::new();
-    /// map.insert("message", "Howdy!");
-    /// 
-    /// let result = Message::new("<registration id>")
-    ///     .data(map)
-    ///     .send("<FCM API Key>");
-    /// ```
-    pub fn send(self, api_key: &'a str) -> Result<response::FcmResponse, response::FcmError> {
-        let payload = self.to_json().to_string();
-        let auth_header = "key=".to_string() + api_key;
-        let client = Client::new();
-
-        let response = client
-            .post("https://fcm.googleapis.com/fcm/send")
-            .body(&payload)
-            .header(Authorization(auth_header))
-            .header(ContentType::json())
-            .send();
-
-        match response {
-            Ok(mut response) => {
-                let mut body = String::new();
-                response.read_to_string(&mut body).unwrap();
-
-                Message::parse_response(response.status, &body)
-            },
-            Err(_) => {
-                Message::parse_response(StatusCode::InternalServerError, "Server Error")
-            }
-        }
-    }
-
-    fn parse_response(status: StatusCode, body: &str) -> Result<response::FcmResponse, response::FcmError> {
-        use hyper::status::StatusCode::*;
-        match status {
-            Ok =>
-                Result::Ok(json::decode(body).unwrap()),
-            Unauthorized =>
-                Err(response::FcmError::Unauthorized),
-            BadRequest =>
-                Err(response::FcmError::InvalidMessage(body.to_string())),
-            status if status.is_server_error() =>
-                Err(response::FcmError::ServerError),
-            _ =>
-                Err(response::FcmError::InvalidMessage("Unknown Error".to_string())),
-        }
     }
 }

@@ -26,25 +26,28 @@ extern crate fcm;
 ```
 
 ## Examples:
- 
+
 Here is an example to send out a FCM Message with some custom data:
- 
+
 ```rust
-use fcm::Message;
+use fcm::{Message, Client};
 use std::collections::HashMap;
+
+let client = Client::new();
 
 let mut map = HashMap::new();
 map.insert("message", "Howdy!");
 
-let result = Message::new("<registration id>")
-    .data(map)
-    .send("<FCM API Key>");
+let message = Message::new("<registration id>").data(map);
+let result = client.send(message, "<FCM API Key>");
 ```
 
 To send a message using FCM Notifications, we first build the notification:
 
 ```rust
-use fcm::{Message, NotificationBuilder};
+use fcm::{Message, NotificationBuilder, Client};
+
+let client = Client::new();
 
 let notification = NotificationBuilder::new("Hey!")
     .body("Do you want to catch up later?")
@@ -54,9 +57,10 @@ let notification = NotificationBuilder::new("Hey!")
 And then set it in the message, before sending it:
 
 ```rust
-let result = Message::new("<registration id>")
-    .notification(notification)
-    .send("<FCM API Key>");
+let message = Message::new("<registration id>")
+    .notification(notification);
+
+let result = client.send(message, "<FCM API Key>");
 ```
 
 You can now handle the result accordingly:

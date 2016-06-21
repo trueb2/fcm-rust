@@ -22,15 +22,16 @@
 //! Here is an example to send out a FCM Message with some custom data:
 //! 
 //! ```no_run
-//! use fcm::Message;
+//! use fcm::{Message, Client};
 //! use std::collections::HashMap;
+//!
+//! let client = Client::new();
 //!
 //! let mut map = HashMap::new();
 //! map.insert("message", "Howdy!");
 //! 
-//! let result = Message::new("<registration id>")
-//!     .data(map)
-//!     .send("<FCM API Key>");
+//! let message = Message::new("<registration id>").data(map);
+//! let result = client.send(message, "<FCM API Key>");
 //! ```
 //!
 //! To send a message using FCM Notifications, we first build the notification:
@@ -45,24 +46,25 @@
 //! And then set it in the message, before sending it:
 //! 
 //! ```no_run
-//! # use fcm::{Message, NotificationBuilder};
+//! # use fcm::{Message, NotificationBuilder, Client};
+//! # let client = Client::new();
 //! # let notification = NotificationBuilder::new("Hey!")
 //! #     .body("Do you want to catch up later?")
 //! #     .finalize();
-//! let result = Message::new("<registration id>")
-//!     .notification(notification)
-//!     .send("<FCM API Key>");
+//! let message = Message::new("<registration id>").notification(notification);
+//! let result = client.send(message, "<FCM API Key>");
 //! ```
 //! You can now handle the result accordingly:
 //!
 //! ```no_run
-//! # use fcm::{Message, NotificationBuilder};
+//! # use fcm::{Message, NotificationBuilder, Client};
+//! # let client = Client::new();
 //! # let notification = NotificationBuilder::new("Hey!")
 //! #     .body("Do you want to catch up later?")
 //! #     .finalize();
-//! # let result = Message::new("<registration id>")
-//! #     .notification(notification)
-//! #     .send("<FCM API Key>");
+//! # let message = Message::new("<registration id>")
+//! #     .notification(notification);
+//! # let result = client.send(message, "<FCM API Key>");
 //! match result {
 //!   Ok(response) => println!("message_id: {:?}", response.message_id),
 //!   Err(error) => println!("Error: {:?}", error),
@@ -76,6 +78,8 @@ mod message;
 pub use message::*;
 mod notification;
 pub use notification::*;
+mod client;
+pub use client::*;
 
-pub use message::response::FcmError as Error;
+pub use client::response::FcmError as Error;
 
