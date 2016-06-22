@@ -102,7 +102,7 @@ pub struct NotificationBuilder<'a> {
     title_loc_args: Option<Vec<String>>,
 }
 
-impl <'a> NotificationBuilder<'a> {
+impl<'a> NotificationBuilder<'a> {
     /// Get a new `NotificationBuilder` instance, with a title.
     pub fn new(title: &'a str) -> NotificationBuilder<'a> {
         NotificationBuilder {
@@ -173,8 +173,8 @@ impl <'a> NotificationBuilder<'a> {
     }
 
     /// String value to replace format specifiers in the body string.
-    pub fn body_loc_args(&mut self, body_loc_args: Vec<&'a str>) -> &mut NotificationBuilder<'a> {
-        self.body_loc_args = Some(body_loc_args.iter().map(|s| s.to_string()).collect());
+    pub fn body_loc_args<S: Into<String>>(&mut self, body_loc_args: Vec<S>) -> &mut NotificationBuilder<'a> {
+        self.body_loc_args = Some(body_loc_args.into_iter().map(|s| s.into()).collect());
         self
     }
 
@@ -185,8 +185,8 @@ impl <'a> NotificationBuilder<'a> {
     }
 
     /// String value to replace format specifiers in the title string.
-    pub fn title_loc_args(&mut self, title_loc_args: Vec<&'a str>) -> &mut NotificationBuilder<'a> {
-        self.title_loc_args = Some(title_loc_args.iter().map(|s| s.to_string()).collect());
+    pub fn title_loc_args<S: Into<String>>(&mut self, title_loc_args: Vec<S>) -> &mut NotificationBuilder<'a> {
+        self.title_loc_args = Some(title_loc_args.into_iter().map(|s| s.into()).collect());
         self
     }
 
