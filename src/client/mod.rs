@@ -26,13 +26,13 @@ impl Client {
     /// Send a message using your FCM API Key.
     /// # Examples:
     /// ```no_run
-    /// use fcm::{Message, Client};
+    /// use fcm::{MessageBuilder, Client};
     /// use std::collections::HashMap;
     ///
     /// let mut map = HashMap::new();
     /// map.insert("message", "Howdy!");
     ///
-    /// let message = Message::new("<registration id>").data(map);
+    /// let message = MessageBuilder::new("<registration id>").data(map).finalize();
     /// let client = Client::new();
     /// let result = client.send(message, "<FCM API Key>");
     /// ```
