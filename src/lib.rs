@@ -22,7 +22,7 @@
 //! Here is an example to send out a FCM Message with some custom data:
 //! 
 //! ```no_run
-//! use fcm::{Message, Client};
+//! use fcm::{MessageBuilder, Client};
 //! use std::collections::HashMap;
 //!
 //! let client = Client::new();
@@ -30,14 +30,14 @@
 //! let mut map = HashMap::new();
 //! map.insert("message", "Howdy!");
 //! 
-//! let message = Message::new("<registration id>").data(map);
-//! let result = client.send(message, "<FCM API Key>");
+//! let message = MessageBuilder::new("<registration id>").data(map);
+//! let result = client.send(message.finalize(), "<FCM API Key>");
 //! ```
 //!
 //! To send a message using FCM Notifications, we first build the notification:
 //! 
 //! ```rust
-//! use fcm::{Message, NotificationBuilder};
+//! use fcm::{MessageBuilder, NotificationBuilder};
 //!
 //! let notification = NotificationBuilder::new("Hey!")
 //!     .body("Do you want to catch up later?")
@@ -46,24 +46,24 @@
 //! And then set it in the message, before sending it:
 //! 
 //! ```no_run
-//! # use fcm::{Message, NotificationBuilder, Client};
+//! # use fcm::{MessageBuilder, NotificationBuilder, Client};
 //! # let client = Client::new();
 //! # let notification = NotificationBuilder::new("Hey!")
 //! #     .body("Do you want to catch up later?")
 //! #     .finalize();
-//! let message = Message::new("<registration id>").notification(notification);
-//! let result = client.send(message, "<FCM API Key>");
+//! let message = MessageBuilder::new("<registration id>").notification(notification);
+//! let result = client.send(message.finalize(), "<FCM API Key>");
 //! ```
 //! You can now handle the result accordingly:
 //!
 //! ```no_run
-//! # use fcm::{Message, NotificationBuilder, Client};
+//! # use fcm::{MessageBuilder, NotificationBuilder, Client};
 //! # let client = Client::new();
 //! # let notification = NotificationBuilder::new("Hey!")
 //! #     .body("Do you want to catch up later?")
 //! #     .finalize();
-//! # let message = Message::new("<registration id>")
-//! #     .notification(notification);
+//! # let message = MessageBuilder::new("<registration id>")
+//! #     .notification(notification).finalize();
 //! # let result = client.send(message, "<FCM API Key>");
 //! match result {
 //!   Ok(response) => println!("message_id: {:?}", response.message_id),
