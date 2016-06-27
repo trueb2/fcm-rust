@@ -19,6 +19,7 @@ pub enum Priority {
 ///
 /// let message = MessageBuilder::new("<registration id>").dry_run(true).finalize();
 /// ```
+#[derive(Debug)]
 pub struct Message<'a> {
     to: &'a str,
     registration_ids: Option<Vec<String>>,
@@ -97,6 +98,7 @@ impl <'a> ToJson for Message<'a> {
 ///
 /// let message = MessageBuilder::new("<registration id>").dry_run(true).finalize();
 /// ```
+#[derive(Debug)]
 pub struct MessageBuilder<'a> {
     to: &'a str,
     registration_ids: Option<Vec<String>>,
