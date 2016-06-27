@@ -113,8 +113,8 @@ impl <'a> Message<'a> {
     }
 
     /// Set various registration ids to which the message ought to be sent.
-    pub fn registration_ids(mut self, ids: Vec<&'a str>) -> Message<'a> {
-        self.registration_ids = Some(ids.iter().map(|s| s.to_string()).collect());
+    pub fn registration_ids<S: Into<String>>(mut self, ids: Vec<S>) -> Message<'a> {
+        self.registration_ids = Some(ids.into_iter().map(|s| s.into()).collect());
         self
     }
 
