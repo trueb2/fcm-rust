@@ -9,9 +9,9 @@ use rustc_serialize::json::{ToJson, Json};
 /// this notification instance when sending a FCM message.
 #[derive(Debug, PartialEq, Clone)]
 pub struct Notification<'a> {
-    title: &'a str,
+    title: Option<&'a str>,
     body: Option<&'a str>,
-    icon: &'a str,
+    icon: Option<&'a str>,
     sound: Option<&'a str>,
     badge: Option<&'a str>,
     tag: Option<&'a str>,
@@ -27,8 +27,13 @@ impl <'a>ToJson for Notification<'a> {
     fn to_json(&self) -> Json {
         let mut root = BTreeMap::new();
 
-        root.insert("title".to_string(), self.title.to_json());
-        root.insert("icon".to_string(), self.icon.to_json());
+        if self.title.is_some() {
+            root.insert("title".to_string(), self.title.clone().unwrap().to_json());
+        }
+
+        if self.icon.is_some() {
+            root.insert("icon".to_string(), self.icon.clone().unwrap().to_json());
+        }
 
         if self.body.is_some() {
             root.insert("body".to_string(), self.body.clone().unwrap().to_json());
@@ -83,14 +88,15 @@ impl <'a>ToJson for Notification<'a> {
 /// ```rust
 /// use fcm::NotificationBuilder;
 ///
-/// let notification = NotificationBuilder::new("India vs. Australia")
+/// let notification = NotificationBuilder::new()
+//      .title("Australia vs New Zealand")
 ///     .body("3 runs to win in 1 ball")
 ///     .finalize();
 /// ```
 pub struct NotificationBuilder<'a> {
-    title: &'a str,
+    title: Option<&'a str>,
     body: Option<&'a str>,
-    icon: &'a str,
+    icon: Option<&'a str>,
     sound: Option<&'a str>,
     badge: Option<&'a str>,
     tag: Option<&'a str>,
@@ -104,11 +110,11 @@ pub struct NotificationBuilder<'a> {
 
 impl<'a> NotificationBuilder<'a> {
     /// Get a new `NotificationBuilder` instance, with a title.
-    pub fn new(title: &'a str) -> NotificationBuilder<'a> {
+    pub fn new() -> NotificationBuilder<'a> {
         NotificationBuilder {
-            title: title,
+            title: None,
             body: None,
-            icon: "myicon",
+            icon: None,
             sound: None,
             badge: None,
             tag: None,
@@ -121,15 +127,21 @@ impl<'a> NotificationBuilder<'a> {
         }
     }
 
+    // Set the title of the notification
+    pub fn title(&mut self, title: &'a str) -> &mut NotificationBuilder<'a> {
+        self.title = Some(title);
+        self
+    }
+
     /// Set the body of the notification
     pub fn body(&mut self, body: &'a str) -> &mut NotificationBuilder<'a> {
         self.body = Some(body);
         self
     }
 
-    /// Set the notification icon. Defaults to `myicon`
+    /// Set the notification icon.
     pub fn icon(&mut self, icon: &'a str) -> &mut NotificationBuilder<'a> {
-        self.icon = icon;
+        self.icon = Some(icon);
         self
     }
 
