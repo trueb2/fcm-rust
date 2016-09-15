@@ -4,19 +4,24 @@ use rustc_serialize::json::{ToJson};
 use {NotificationBuilder};
 
 #[test]
-fn should_create_new_notification_message() {
-    let nm = NotificationBuilder::new("title").finalize();
+fn should_set_notification_title() {
+    let nm = NotificationBuilder::new().finalize();
 
-    assert_eq!(nm.title, "title");
+    assert_eq!(nm.title, None);
+
+    let nm = NotificationBuilder::new()
+        .title("title")
+        .finalize();
+
+    assert_eq!(nm.title, Some("title"));
 }
-
 #[test]
 fn should_set_notification_body() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.body, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .body("body")
         .finalize();
 
@@ -24,28 +29,21 @@ fn should_set_notification_body() {
 }
 
 #[test]
-fn should_set_default_icon() {
-    let nm = NotificationBuilder::new("title").finalize();
-
-    assert_eq!(nm.icon, "myicon");
-}
-
-#[test]
 fn should_set_notification_icon() {
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .icon("newicon")
         .finalize();
 
-    assert_eq!(nm.icon, "newicon");
+    assert_eq!(nm.icon, Some("newicon"));
 }
 
 #[test]
 fn should_set_notification_sound() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.sound, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .sound("sound.wav")
         .finalize();
 
@@ -54,11 +52,11 @@ fn should_set_notification_sound() {
 
 #[test]
 fn should_set_notification_badge() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.badge, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .badge("1")
         .finalize();
 
@@ -67,11 +65,11 @@ fn should_set_notification_badge() {
 
 #[test]
 fn should_set_notification_tag() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.tag, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .tag("tag")
         .finalize();
 
@@ -80,11 +78,11 @@ fn should_set_notification_tag() {
 
 #[test]
 fn should_set_notification_color() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.color, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .color("color")
         .finalize();
 
@@ -93,11 +91,11 @@ fn should_set_notification_color() {
 
 #[test]
 fn should_set_notification_click_action() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.click_action, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .click_action("action")
         .finalize();
 
@@ -106,11 +104,11 @@ fn should_set_notification_click_action() {
 
 #[test]
 fn should_set_notification_body_loc_key() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.body_loc_key, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .body_loc_key("key")
         .finalize();
 
@@ -119,11 +117,11 @@ fn should_set_notification_body_loc_key() {
 
 #[test]
 fn should_set_notification_body_loc_args() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.body_loc_args, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .body_loc_args(vec!["args"])
         .finalize();
 
@@ -133,11 +131,11 @@ fn should_set_notification_body_loc_args() {
 
 #[test]
 fn should_set_notification_title_loc_key() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.title_loc_key, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .title_loc_key("key")
         .finalize();
 
@@ -146,11 +144,11 @@ fn should_set_notification_title_loc_key() {
 
 #[test]
 fn should_set_notification_title_loc_args() {
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     assert_eq!(nm.title_loc_args, None);
 
-    let nm = NotificationBuilder::new("title")
+    let nm = NotificationBuilder::new()
         .title_loc_args(vec!["args"])
         .finalize();
 

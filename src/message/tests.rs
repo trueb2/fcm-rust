@@ -126,7 +126,7 @@ fn should_set_notifications() {
 
     assert_eq!(msg.notification, None);
 
-    let nm = NotificationBuilder::new("title").finalize();
+    let nm = NotificationBuilder::new().finalize();
 
     let msg = MessageBuilder::new("token")
         .notification(nm).finalize();
