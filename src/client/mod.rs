@@ -52,10 +52,15 @@ impl Client {
                 let mut body = String::new();
                 let retry_after = response.headers.get::<RetryAfter>().map(|ra| *ra);
                 response.read_to_string(&mut body).unwrap();
+                let fcm_response: FcmResponse = json::decode(&body).unwrap();
 
                 match response.status {
+                    StatusCode::Ok if fcm_response.error.unwrap() == "Unavailable" =>
+                        Err(response::FcmError::ServerError(retry_after)),
+                    StatusCode::Ok if fcm_response.error.unwrap() == "InternalServerError" =>
+                        Err(response::FcmError::ServerError(retry_after)),
                     StatusCode::Ok =>
-                        Result::Ok(json::decode(&body).unwrap()),
+                        Result::Ok(fcm_response),
                     StatusCode::Unauthorized =>
                         Err(response::FcmError::Unauthorized),
                     StatusCode::BadRequest =>
