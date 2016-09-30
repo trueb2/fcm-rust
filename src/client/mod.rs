@@ -1,6 +1,3 @@
-#[cfg(test)]
-mod tests;
-
 pub mod response;
 
 pub use client::response::*;
@@ -10,6 +7,7 @@ use hyper::client::Client as HttpClient;
 use hyper::header::{Authorization, ContentType, Connection};
 use hyper::status::StatusCode;
 use rustc_serialize::json::{self, ToJson};
+use retry_after::RetryAfter;
 
 pub struct Client {
     http_client: HttpClient,
@@ -52,29 +50,25 @@ impl Client {
         match response {
             Ok(mut response) => {
                 let mut body = String::new();
+                let retry_after = response.headers.get::<RetryAfter>().map(|ra| *ra);
                 response.read_to_string(&mut body).unwrap();
 
-                Client::parse_response(response.status, &body)
+                match response.status {
+                    StatusCode::Ok =>
+                        Result::Ok(json::decode(&body).unwrap()),
+                    StatusCode::Unauthorized =>
+                        Err(response::FcmError::Unauthorized),
+                    StatusCode::BadRequest =>
+                        Err(response::FcmError::InvalidMessage(body.to_string())),
+                    status if status.is_server_error() =>
+                        Err(response::FcmError::ServerError(retry_after)),
+                    _ =>
+                        Err(response::FcmError::InvalidMessage("Unknown Error".to_string())),
+                }
             },
             Err(_) => {
-                Client::parse_response(StatusCode::InternalServerError, "Server Error")
+                Err(response::FcmError::ServerError(None))
             }
-        }
-    }
-
-    fn parse_response(status: StatusCode, body: &str) -> Result<response::FcmResponse, response::FcmError> {
-        use hyper::status::StatusCode::*;
-        match status {
-            Ok =>
-                Result::Ok(json::decode(body).unwrap()),
-            Unauthorized =>
-                Err(response::FcmError::Unauthorized),
-            BadRequest =>
-                Err(response::FcmError::InvalidMessage(body.to_string())),
-            status if status.is_server_error() =>
-                Err(response::FcmError::ServerError),
-            _ =>
-                Err(response::FcmError::InvalidMessage("Unknown Error".to_string())),
         }
     }
 }

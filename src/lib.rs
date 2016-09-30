@@ -73,6 +73,7 @@
 
 extern crate rustc_serialize;
 extern crate hyper;
+extern crate retry_after;
 
 mod message;
 pub use message::*;

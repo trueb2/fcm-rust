@@ -1,3 +1,4 @@
+use retry_after::RetryAfter;
 #[derive(RustcDecodable, Debug)]
 pub struct FcmResponse {
     pub message_id: Option<u64>,
@@ -6,7 +7,8 @@ pub struct FcmResponse {
     pub success: Option<u64>,
     pub failure: Option<u64>,
     pub canonical_ids: Option<u64>,
-    pub results: Option<Vec<MessageResult>>
+    pub results: Option<Vec<MessageResult>>,
+    pub retry_after: Option<i64>
 }
 
 #[derive(RustcDecodable, Debug)]
@@ -18,5 +20,5 @@ pub struct MessageResult {
 
 #[derive(PartialEq, Debug)]
 pub enum FcmError {
-    Unauthorized, InvalidMessage(String), ServerError
+    Unauthorized, InvalidMessage(String), ServerError(Option<RetryAfter>)
 }
