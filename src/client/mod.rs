@@ -55,9 +55,9 @@ impl Client {
                 let fcm_response: FcmResponse = json::decode(&body).unwrap();
 
                 match response.status {
-                    StatusCode::Ok if fcm_response.error.unwrap() == "Unavailable" =>
+                    StatusCode::Ok if fcm_response.error.unwrap_or(String::new()) == "Unavailable" =>
                         Err(response::FcmError::ServerError(retry_after)),
-                    StatusCode::Ok if fcm_response.error.unwrap() == "InternalServerError" =>
+                    StatusCode::Ok if fcm_response.error.unwrap_or(String::new()) == "InternalServerError" =>
                         Err(response::FcmError::ServerError(retry_after)),
                     StatusCode::Ok =>
                         Result::Ok(fcm_response),
