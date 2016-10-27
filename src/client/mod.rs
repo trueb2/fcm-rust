@@ -47,6 +47,8 @@ impl Client {
             header(ContentType::json()).
             send();
 
+        println!("{:?}", response);
+
         match response {
             Ok(mut response) => {
                 let mut body = String::new();
