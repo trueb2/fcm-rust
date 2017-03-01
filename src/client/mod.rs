@@ -64,13 +64,14 @@ impl Service for Client {
     type Future = FutureResponse;
 
     fn call(&self, message: Self::Request) -> Self::Future {
-        let payload = message.to_json().to_string();
+        let payload = message.to_json().to_string().into_bytes();
         let auth_header = format!("key={}", message.api_key);
 
         let mut request = Request::new(Post, "https://fcm.googleapis.com/fcm/send".parse().unwrap());
         request.headers_mut().set(ContentType::json());
         request.headers_mut().set(Authorization(auth_header));
-        request.set_body(payload.into_bytes());
+        request.headers_mut().set(ContentLength(payload.len() as u64));
+        request.set_body(payload);
 
         let request_f = self.http_client.request(request).map_err(|_| { response::FcmError::ServerError(None) });
 
