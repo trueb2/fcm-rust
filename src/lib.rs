@@ -32,7 +32,7 @@
 //! # fn main() {
 //! let mut core = tokio_core::reactor::Core::new().unwrap();
 //! let handle = core.handle();
-//! let client = fcm::Client::new(&handle);
+//! let client = fcm::Client::new(&handle).unwrap();
 //!
 //! let mut map = HashMap::new();
 //! map.insert("message", "Howdy!");
@@ -71,7 +71,7 @@
 //! # fn main() {
 //! let mut core = tokio_core::reactor::Core::new().unwrap();
 //! let handle = core.handle();
-//! let client = fcm::Client::new(&handle);
+//! let client = fcm::Client::new(&handle).unwrap();
 //!
 //! let mut notification_builder = fcm::NotificationBuilder::new();
 //! notification_builder.title("Hey!");
@@ -97,6 +97,7 @@ extern crate futures;
 extern crate tokio_core;
 extern crate tokio_service;
 extern crate hyper_tls;
+extern crate native_tls;
 
 mod message;
 pub use message::*;

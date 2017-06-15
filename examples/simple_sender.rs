@@ -21,7 +21,7 @@ fn main() {
 
     let mut core = tokio_core::reactor::Core::new().unwrap();
     let handle = core.handle();
-    let client = Client::new(&handle);
+    let client = Client::new(&handle).unwrap();
 
     let mut data = HashMap::new();
     data.insert("message", "howdy");

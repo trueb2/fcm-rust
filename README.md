@@ -16,7 +16,7 @@ Add this to `Cargo.toml`:
 
 ```rust
 [dependencies]
-fcm = "0.1.0"
+fcm = "0.2"
 tokio-core = "0.1"
 futures = "0.1"
 ```
@@ -40,7 +40,7 @@ use fcm::{Client, MessageBuilder};
 
 let mut core = Core::new().unwrap();
 let handle = core.handle();
-let client = fcm::Client::new(&handle);
+let client = fcm::Client::new(&handle).unwrap();
 
 let mut map = HashMap::new();
 map.insert("message", "Howdy!");
@@ -65,7 +65,7 @@ use fcm::{Client, NotificationBuilder};
 
 let mut core = Core::new().unwrap();
 let handle = core.handle();
-let client = Client::new(&handle);
+let client = Client::new(&handle).unwrap();
 
 let mut builder = NotificationBuilder::new("Hey!");
 builder.body("Do you want to catch up later?");

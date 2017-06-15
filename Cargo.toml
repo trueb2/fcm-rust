@@ -1,6 +1,6 @@
 [package]
 name = "fcm"
-version = "0.1.1"
+version = "0.2.0"
 authors = [
   "Suvish Varghese Thoovamalayil <vishy1618@gmail.com>",
   "panicbit <panicbit.dev@gmail.com>",
@@ -10,15 +10,16 @@ license = "MIT"
 homepage = "https://github.com/panicbit/fcm-rust"
 repository = "https://github.com/panicbit/fcm-rust"
 documentation = "https://panicbit.github.io/fcm-rust/fcm/"
-keywords = ["fcm", "firebase", "cloud", "messaging", "gcm", "tokio"]
+keywords = ["fcm", "firebase", "cloud", "messaging", "gcm", "tokio", "asynchronous"]
 
 [dependencies]
 rustc-serialize = "0.3.19"
 futures = "0.1"
 tokio-core = "0.1"
 tokio-service = "0.1"
-hyper = { git = "https://github.com/hyperium/hyper"}
-hyper-tls = { git = "https://github.com/hyperium/hyper-tls" }
+hyper = "0.11"
+hyper-tls = "0.1"
+native-tls = "0.1"
 
 [dev-dependencies]
 argparse = "*"

@@ -4,21 +4,22 @@ pub use client::response::*;
 use std::str;
 use std::fmt;
 use message::Message;
-use hyper::client::Client as HttpClient;
+use hyper::client::{Client as HttpClient, HttpConnector};
 use hyper::client::{Request, Response};
 use hyper_tls::HttpsConnector;
 use hyper::header::{Authorization, ContentType, ContentLength, RetryAfter};
 use hyper::Post;
-use hyper::status::StatusCode;
+use hyper::StatusCode;
 use rustc_serialize::json::{self, ToJson};
 use futures::{Future, Poll};
 use futures::future::{ok, err};
 use futures::stream::Stream;
 use tokio_core::reactor::Handle;
+use native_tls;
 pub use tokio_service::Service;
 
 pub struct Client {
-    http_client: HttpClient<HttpsConnector>,
+    http_client: HttpClient<HttpsConnector<HttpConnector>>,
 }
 
 pub struct FutureResponse(Box<Future<Item=FcmResponse, Error=FcmError> + 'static>);
@@ -40,15 +41,15 @@ impl Future for FutureResponse {
 
 impl Client {
     /// Get a new instance of Client.
-    pub fn new(handle: &Handle) -> Client {
+    pub fn new(handle: &Handle) -> Result<Client, native_tls::Error> {
         let http_client = HttpClient::configure()
-            .connector(HttpsConnector::new(1, handle))
+            .connector(HttpsConnector::new(1, handle).unwrap())
             .keep_alive(true)
             .build(handle);
 
-        Client {
+        Ok(Client {
             http_client: http_client,
-        }
+        })
     }
 
     #[inline]
