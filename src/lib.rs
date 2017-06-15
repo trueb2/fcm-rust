@@ -8,7 +8,7 @@
 //!
 //! ```ignore
 //! [dependencies]
-//! fcm = "0.1.0"
+//! fcm = "0.2.0"
 //! ```
 //!
 //! then add this to your crate root:
