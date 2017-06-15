@@ -10,7 +10,7 @@ license = "MIT"
 homepage = "https://github.com/panicbit/fcm-rust"
 repository = "https://github.com/panicbit/fcm-rust"
 documentation = "https://panicbit.github.io/fcm-rust/fcm/"
-keywords = ["fcm", "firebase", "cloud", "messaging", "gcm", "tokio", "asynchronous"]
+keywords = ["fcm", "firebase", "cloud", "messaging", "gcm", "tokio"]
 
 [dependencies]
 rustc-serialize = "0.3.19"
