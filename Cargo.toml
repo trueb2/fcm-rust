@@ -22,4 +22,4 @@ hyper-tls = "0.1"
 native-tls = "0.1"
 
 [dev-dependencies]
-argparse = "*"
+argparse = "0.2.1"
