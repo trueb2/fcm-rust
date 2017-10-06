@@ -79,21 +79,12 @@ impl Service for Client {
         let fcm_f = request_f.and_then(move |response: Response| {
             let retry_after = response.headers().get::<RetryAfter>().map(|ra| *ra);
 
-            let body_vec: Vec<u8> = match response.headers().get::<ContentLength>()
-                .map(|cs| cs.0 as usize) {
-
-                Some(content_size) => Vec::with_capacity(content_size),
-                None => Vec::new()
-            };
-
             let response_status = response.status().clone();
 
-            response.body().map_err(|_| { response::FcmError::ServerError(None) })
-                .fold(body_vec, |mut acc, chunk| {
-                    acc.extend_from_slice(chunk.as_ref());
-                    ok(acc)
-                }).and_then(move |body_vec| {
-                    if let Ok(body) = String::from_utf8(body_vec.clone()) {
+            response.body()
+                .map_err(|_| { response::FcmError::ServerError(None) })
+                .concat2().and_then(move |body_chunk| {
+                    if let Ok(body) = String::from_utf8(body_chunk.to_vec()) {
                         match response_status {
                             StatusCode::Ok => {
                                 let fcm_response: FcmResponse = json::decode(&body).unwrap();
