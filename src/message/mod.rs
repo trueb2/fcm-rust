@@ -121,7 +121,7 @@ pub struct MessageBuilder {
 
 impl MessageBuilder {
     /// Get a new instance of Message. You need to supply either
-    /// a registration id, or a topic (/topic/...).
+    /// a registration id, or a topic (/topics/...).
     pub fn new<S: Into<String>>(api_key: S, to: S) -> MessageBuilder {
         MessageBuilder {
             api_key: api_key.into(),
