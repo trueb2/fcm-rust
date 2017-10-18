@@ -6,7 +6,6 @@ extern crate tokio_core;
 
 use argparse::{ArgumentParser, Store};
 use fcm::{MessageBuilder, Client};
-use std::collections::HashMap;
 
 #[derive(Serialize)]
 struct CustomData {
@@ -29,12 +28,12 @@ fn main() {
     let handle = core.handle();
     let client = Client::new(&handle).unwrap();
 
-    let mut data = CustomData {
+    let data = CustomData {
         message: "howdy",
     };
 
     let mut builder = MessageBuilder::new(api_key.as_ref(), device_token.as_ref());
-    builder.data(Box::new(data));
+    builder.data(&data);
 
     let work = client.send(builder.finalize());
 

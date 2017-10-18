@@ -180,10 +180,10 @@ impl MessageBuilder {
     /// map.insert("message", "Howdy!");
     ///
     /// let mut builder = MessageBuilder::new("<FCM API Key>", "<registration id>");
-    /// builder.data(Box::new(map));
+    /// builder.data(&map);
     /// let message = builder.finalize();
     /// ```
-    pub fn data<'a>(&mut self, data: Box<Serialize>) -> Result<&mut MessageBuilder, serde_json::Error> {
+    pub fn data<'a>(&mut self, data: &Serialize) -> Result<&mut MessageBuilder, serde_json::Error> {
         self.data = Some(serde_json::to_value(data)?);
         Ok(self)
     }

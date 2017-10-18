@@ -37,7 +37,7 @@ fn should_add_custom_data_to_the_payload() {
         bar: false
     };
 
-    builder.data(Box::new(data)).unwrap();
+    builder.data(&data).unwrap();
 
     let msg = builder.finalize();
     let payload = serde_json::to_string(&msg.body).unwrap();

@@ -38,7 +38,7 @@
 //! map.insert("message", "Howdy!");
 //!
 //! let mut builder = fcm::MessageBuilder::new("<FCM API Key>", "<registration id>");
-//! builder.data(Box::new(map));
+//! builder.data(&map);
 //!
 //! let work = client.send(builder.finalize());
 //!
