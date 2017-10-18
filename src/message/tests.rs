@@ -1,6 +1,5 @@
 use {MessageBuilder, Priority};
 use notification::NotificationBuilder;
-use std::collections::HashMap;
 use serde_json;
 
 #[test]

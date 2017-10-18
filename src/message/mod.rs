@@ -183,7 +183,7 @@ impl MessageBuilder {
     /// builder.data(&map);
     /// let message = builder.finalize();
     /// ```
-    pub fn data<'a>(&mut self, data: &Serialize) -> Result<&mut MessageBuilder, serde_json::Error> {
+    pub fn data(&mut self, data: &Serialize) -> Result<&mut MessageBuilder, serde_json::Error> {
         self.data = Some(serde_json::to_value(data)?);
         Ok(self)
     }

@@ -33,7 +33,7 @@ fn main() {
     };
 
     let mut builder = MessageBuilder::new(api_key.as_ref(), device_token.as_ref());
-    builder.data(&data);
+    builder.data(&data).unwrap();
 
     let work = client.send(builder.finalize());
 
