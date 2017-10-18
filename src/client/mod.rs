@@ -10,7 +10,7 @@ use hyper_tls::HttpsConnector;
 use hyper::header::{Authorization, ContentType, ContentLength, RetryAfter};
 use hyper::Post;
 use hyper::StatusCode;
-use rustc_serialize::json::{self, ToJson};
+use serde_json;
 use futures::{Future, Poll};
 use futures::future::{ok, err};
 use futures::stream::Stream;
@@ -65,7 +65,7 @@ impl Service for Client {
     type Future = FutureResponse;
 
     fn call(&self, message: Self::Request) -> Self::Future {
-        let payload = message.to_json().to_string().into_bytes();
+        let payload = serde_json::to_vec(&message.body).unwrap();
         let auth_header = format!("key={}", message.api_key);
 
         let mut request = Request::new(Post, "https://fcm.googleapis.com/fcm/send".parse().unwrap());
@@ -87,7 +87,7 @@ impl Service for Client {
                     if let Ok(body) = String::from_utf8(body_chunk.to_vec()) {
                         match response_status {
                             StatusCode::Ok => {
-                                let fcm_response: FcmResponse = json::decode(&body).unwrap();
+                                let fcm_response: FcmResponse = serde_json::from_str(&body).unwrap();
 
                                 match fcm_response.error.as_ref().map(String::as_ref) {
                                     Some("Unavailable") =>

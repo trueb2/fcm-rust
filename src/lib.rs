@@ -38,7 +38,7 @@
 //! map.insert("message", "Howdy!");
 //!
 //! let mut builder = fcm::MessageBuilder::new("<FCM API Key>", "<registration id>");
-//! builder.data(map);
+//! builder.data(Box::new(map));
 //!
 //! let work = client.send(builder.finalize());
 //!
@@ -91,7 +91,10 @@
 //! # }
 //! ```
 
-extern crate rustc_serialize;
+#[macro_use] extern crate serde_derive;
+#[macro_use] extern crate serde_json;
+extern crate serde;
+extern crate erased_serde;
 extern crate hyper;
 extern crate futures;
 extern crate tokio_core;

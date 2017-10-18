@@ -2,13 +2,48 @@
 mod tests;
 
 use notification::Notification;
-use std::collections::HashMap;
-use std::collections::BTreeMap;
-use rustc_serialize::json::{Json, ToJson};
+use erased_serde::Serialize;
+use serde_json::{self, Value};
 
-#[derive(PartialEq, Debug, Clone, Copy)]
+#[derive(Serialize, PartialEq, Debug)]
+#[serde(rename_all = "lowercase")]
 pub enum Priority {
     Normal, High
+}
+
+#[derive(Serialize, Debug, PartialEq)]
+pub struct MessageBody {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    collapse_key: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    content_available: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    data: Option<Value>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    delay_while_idle: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    dry_run: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    notification: Option<Notification>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    priority: Option<Priority>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    registration_ids: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    restricted_package_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    time_to_live: Option<i32>,
+
+    to: String,
 }
 
 /// Represents a FCM message. Construct the FCM message
@@ -24,71 +59,7 @@ pub enum Priority {
 #[derive(Debug)]
 pub struct Message {
     pub api_key: String,
-    to: String,
-    registration_ids: Option<Vec<String>>,
-    collapse_key: Option<String>,
-    priority: Option<Priority>,
-    content_available: Option<bool>,
-    delay_while_idle: Option<bool>,
-    time_to_live: Option<i32>,
-    restricted_package_name: Option<String>,
-    dry_run: Option<bool>,
-    data: Option<HashMap<String, String>>,
-    notification: Option<Notification>,
-}
-
-impl ToJson for Message {
-    fn to_json(&self) -> Json {
-        let mut root = BTreeMap::new();
-
-        root.insert("to".to_string(), self.to.to_json());
-
-        if self.registration_ids.is_some() {
-            root.insert("registration_ids".to_string(), 
-                    self.registration_ids.clone().unwrap().to_json());
-        }
-
-        if self.collapse_key.is_some() {
-            root.insert("collapse_key".to_string(), self.collapse_key.clone().unwrap().to_json());
-        }
-
-        if self.priority.is_some() {
-            root.insert("priority".to_string(), match self.priority.clone().unwrap() {
-                Priority::Normal => Json::String("normal".to_string()),
-                Priority::High => Json::String("high".to_string()),
-            });
-        }
-
-        if self.content_available.is_some() {
-            root.insert("content_available".to_string(), self.content_available.unwrap().to_json());
-        }
-
-        if self.delay_while_idle.is_some() {
-            root.insert("delay_while_idle".to_string(), self.delay_while_idle.unwrap().to_json());
-        }
-
-        if self.time_to_live.is_some() {
-            root.insert("time_to_live".to_string(), self.time_to_live.unwrap().to_json());
-        }
-
-        if self.restricted_package_name.is_some() {
-            root.insert("restricted_package_name".to_string(), self.restricted_package_name.clone().unwrap().to_json());
-        }
-
-        if self.dry_run.is_some() {
-            root.insert("dry_run".to_string(), self.dry_run.unwrap().to_json());
-        }
-
-        if self.data.is_some() {
-            root.insert("data".to_string(), self.data.clone().unwrap().to_json());
-        }
-
-        if self.notification.is_some() {
-            root.insert("notification".to_string(), self.notification.clone().unwrap().to_json());
-        }
-
-        Json::Object(root)
-    }
+    pub body: MessageBody,
 }
 
 ///
@@ -106,17 +77,17 @@ impl ToJson for Message {
 #[derive(Debug)]
 pub struct MessageBuilder {
     api_key: String,
-    to: String,
-    registration_ids: Option<Vec<String>>,
     collapse_key: Option<String>,
-    priority: Option<Priority>,
     content_available: Option<bool>,
+    data: Option<Value>,
     delay_while_idle: Option<bool>,
-    time_to_live: Option<i32>,
-    restricted_package_name: Option<String>,
     dry_run: Option<bool>,
-    data: Option<HashMap<String, String>>,
     notification: Option<Notification>,
+    priority: Option<Priority>,
+    registration_ids: Option<Vec<String>>,
+    restricted_package_name: Option<String>,
+    time_to_live: Option<i32>,
+    to: String,
 }
 
 impl MessageBuilder {
@@ -197,7 +168,9 @@ impl MessageBuilder {
     }
 
     /// Use this to add custom key-value pairs to the message. This data
-    /// must be handled appropriately on the client end.
+    /// must be handled appropriately on the client end. The data can be
+    /// anything that Serde can serialize to JSON.
+    ///
     /// # Examples:
     /// ```rust
     /// use fcm::MessageBuilder;
@@ -207,17 +180,12 @@ impl MessageBuilder {
     /// map.insert("message", "Howdy!");
     ///
     /// let mut builder = MessageBuilder::new("<FCM API Key>", "<registration id>");
-    /// builder.data(map);
+    /// builder.data(Box::new(map));
     /// let message = builder.finalize();
     /// ```
-    pub fn data<'a>(&mut self, data: HashMap<&'a str, &'a str>) -> &mut MessageBuilder {
-        let mut datamap: HashMap<String, String> = HashMap::new();
-        for (key, val) in data.iter() {
-            datamap.insert(key.to_string(), val.to_string());
-        }
-
-        self.data = Some(datamap);
-        self
+    pub fn data<'a>(&mut self, data: Box<Serialize>) -> Result<&mut MessageBuilder, serde_json::Error> {
+        self.data = Some(serde_json::to_value(data)?);
+        Ok(self)
     }
 
     /// Use this to set a `Notification` for the message.
@@ -243,17 +211,19 @@ impl MessageBuilder {
     pub fn finalize(self) -> Message {
         Message {
             api_key: self.api_key,
-            to: self.to,
-            registration_ids: self.registration_ids.clone(),
-            collapse_key: self.collapse_key,
-            priority: self.priority,
-            content_available: self.content_available,
-            delay_while_idle: self.delay_while_idle,
-            time_to_live: self.time_to_live,
-            restricted_package_name: self.restricted_package_name,
-            dry_run: self.dry_run,
-            data: self.data.clone(),
-            notification: self.notification.clone(),
+            body: MessageBody {
+                to: self.to,
+                registration_ids: self.registration_ids.clone(),
+                collapse_key: self.collapse_key,
+                priority: self.priority,
+                content_available: self.content_available,
+                delay_while_idle: self.delay_while_idle,
+                time_to_live: self.time_to_live,
+                restricted_package_name: self.restricted_package_name,
+                dry_run: self.dry_run,
+                data: self.data.clone(),
+                notification: self.notification,
+            }
         }
     }
 }

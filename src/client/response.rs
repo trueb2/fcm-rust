@@ -1,6 +1,6 @@
 use hyper::header::RetryAfter;
 
-#[derive(RustcDecodable, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct FcmResponse {
     pub message_id: Option<u64>,
     pub error: Option<String>,
@@ -11,14 +11,14 @@ pub struct FcmResponse {
     pub results: Option<Vec<MessageResult>>,
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct MessageResult {
     pub message_id: Option<String>,
     pub registration_id: Option<String>,
     pub error: Option<String>,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(Debug)]
 pub enum FcmError {
     Unauthorized,
     InvalidMessage(String),
