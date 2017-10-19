@@ -2,10 +2,15 @@ extern crate fcm;
 extern crate argparse;
 extern crate futures;
 extern crate tokio_core;
+#[macro_use] extern crate serde_derive;
 
 use argparse::{ArgumentParser, Store};
 use fcm::{MessageBuilder, Client};
-use std::collections::HashMap;
+
+#[derive(Serialize)]
+struct CustomData {
+    message: &'static str,
+}
 
 fn main() {
     let mut device_token = String::new();
@@ -23,11 +28,12 @@ fn main() {
     let handle = core.handle();
     let client = Client::new(&handle).unwrap();
 
-    let mut data = HashMap::new();
-    data.insert("message", "howdy");
+    let data = CustomData {
+        message: "howdy",
+    };
 
     let mut builder = MessageBuilder::new(api_key.as_ref(), device_token.as_ref());
-    builder.data(data);
+    builder.data(&data).unwrap();
 
     let work = client.send(builder.finalize());
 

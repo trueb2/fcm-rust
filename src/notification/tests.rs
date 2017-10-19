@@ -1,7 +1,42 @@
-extern crate rustc_serialize;
-
-use rustc_serialize::json::{ToJson};
+use serde_json;
 use {NotificationBuilder};
+
+#[test]
+fn should_be_able_to_render_a_full_notification_to_json() {
+    let mut builder = NotificationBuilder::new();
+
+    builder.title("foo")
+        .body("bar")
+        .icon("gif")
+        .sound("pling")
+        .badge("12")
+        .tag("spook")
+        .color("#666666")
+        .click_action("spam")
+        .body_loc_key("PLAY")
+        .body_loc_args(vec!["foo", "bar"])
+        .title_loc_key("PAUSE")
+        .title_loc_args(vec!["omg", "lol"]);
+
+    let payload = serde_json::to_string(&builder.finalize()).unwrap();
+
+    let expected_payload = json!({
+        "badge": "12",
+        "body": "bar",
+        "body_loc_args": ["foo", "bar"],
+        "body_loc_key": "PLAY",
+        "click_action": "spam",
+        "color": "#666666",
+        "icon": "gif",
+        "sound": "pling",
+        "tag": "spook",
+        "title": "foo",
+        "title_loc_args": ["omg", "lol"],
+        "title_loc_key": "PAUSE"
+    }).to_string();
+
+    assert_eq!(expected_payload, payload);
+}
 
 #[test]
 fn should_set_notification_title() {
@@ -15,6 +50,7 @@ fn should_set_notification_title() {
 
     assert_eq!(nm.title, Some("title".to_string()));
 }
+
 #[test]
 fn should_set_notification_body() {
     let nm = NotificationBuilder::new().finalize();
@@ -126,7 +162,6 @@ fn should_set_notification_body_loc_args() {
     let nm = builder.finalize();
 
     assert_eq!(nm.body_loc_args, Some(vec!["args".to_string()]));
-    assert_eq!(nm.to_json().search("body_loc_args").unwrap().as_string(), Some("[\"args\"]"));
 }
 
 #[test]
@@ -153,5 +188,4 @@ fn should_set_notification_title_loc_args() {
     let nm = builder.finalize();
 
     assert_eq!(nm.title_loc_args, Some(vec!["args".to_string()]));
-    assert_eq!(nm.to_json().search("title_loc_args").unwrap().as_string(), Some("[\"args\"]"));
 }
