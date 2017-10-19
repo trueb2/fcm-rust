@@ -18,7 +18,7 @@ pub struct MessageResult {
     pub error: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub enum FcmError {
     Unauthorized,
     InvalidMessage(String),
