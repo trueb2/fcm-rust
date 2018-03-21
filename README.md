@@ -25,7 +25,7 @@ then add this to your crate root:
 
 ```rust
 extern crate fcm;
-extern crate tokio;
+extern crate tokio_core;
 extern crate futures;
 ```
 
