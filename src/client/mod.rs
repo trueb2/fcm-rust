@@ -5,7 +5,6 @@ pub use tokio_service::Service;
 
 use std::{
     fmt,
-    time::Duration
 };
 use hyper::{
     Request,
@@ -54,7 +53,6 @@ impl Client {
     pub fn new() -> Result<Client, native_tls::Error> {
         let mut http_client = HttpClient::builder();
         http_client.keep_alive(true);
-        http_client.keep_alive_timeout(Some(Duration::from_secs(600)));
 
         Ok(Client {
             http_client: http_client.build(HttpsConnector::new(4).unwrap()),
