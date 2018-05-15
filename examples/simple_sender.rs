@@ -1,11 +1,15 @@
 extern crate fcm;
 extern crate argparse;
 extern crate futures;
-extern crate tokio_core;
+extern crate tokio;
 #[macro_use] extern crate serde_derive;
 
 use argparse::{ArgumentParser, Store};
 use fcm::{MessageBuilder, Client};
+use futures::{
+    future::lazy,
+    Future,
+};
 
 #[derive(Serialize)]
 struct CustomData {
@@ -24,9 +28,7 @@ fn main() {
         ap.parse_args_or_exit();
     }
 
-    let mut core = tokio_core::reactor::Core::new().unwrap();
-    let handle = core.handle();
-    let client = Client::new(&handle).unwrap();
+    let client = Client::new().unwrap();
 
     let data = CustomData {
         message: "howdy",
@@ -34,11 +36,15 @@ fn main() {
 
     let mut builder = MessageBuilder::new(api_key.as_ref(), device_token.as_ref());
     builder.data(&data).unwrap();
+    let payload = builder.finalize();
 
-    let work = client.send(builder.finalize());
-
-    match core.run(work) {
-        Ok(response) => println!("Sent: {:?}", response),
-        Err(error) => println!("Error: {:?}", error),
-    };
+    tokio::run(lazy(move || {
+        client
+            .send(payload)
+            .map(|response| {
+                println!("Sent: {:?}", response);
+            }).map_err(|error| {
+                println!("Error: {:?}", error)
+            })
+    }));
 }

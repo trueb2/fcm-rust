@@ -16,7 +16,7 @@
 //! ```ignore
 //! extern crate fcm;
 //! extern crate futures;
-//! extern crate tokio_core;
+//! extern crate tokio;
 //! ```
 //!
 //! # Examples:
@@ -26,13 +26,12 @@
 //! ```no_run
 //! # extern crate fcm;
 //! # extern crate futures;
-//! # extern crate tokio_core;
+//! # extern crate tokio;
 //!
 //! # use std::collections::HashMap;
+//! # use futures::{future::lazy, Future};
 //! # fn main() {
-//! let mut core = tokio_core::reactor::Core::new().unwrap();
-//! let handle = core.handle();
-//! let client = fcm::Client::new(&handle).unwrap();
+//! let client = fcm::Client::new().unwrap();
 //!
 //! let mut map = HashMap::new();
 //! map.insert("message", "Howdy!");
@@ -40,12 +39,17 @@
 //! let mut builder = fcm::MessageBuilder::new("<FCM API Key>", "<registration id>");
 //! builder.data(&map);
 //!
-//! let work = client.send(builder.finalize());
+//! let payload = builder.finalize();
 //!
-//! match core.run(work) {
-//!     Ok(response) => println!("Sent: {:?}", response),
-//!     Err(error) => println!("Error: {:?}", error),
-//! };
+//! tokio::run(lazy(move || {
+//!     client
+//!         .send(payload)
+//!         .map(|response| {
+//!             println!("Sent: {:?}", response);
+//!         }).map_err(|error| {
+//!             println!("Error: {:?}", error)
+//!         })
+//! }));
 //! # }
 //! ```
 //!
@@ -66,12 +70,11 @@
 //! ```no_run
 //! # extern crate fcm;
 //! # extern crate futures;
-//! # extern crate tokio_core;
+//! # extern crate tokio;
 //!
+//! # use futures::{future::lazy, Future};
 //! # fn main() {
-//! let mut core = tokio_core::reactor::Core::new().unwrap();
-//! let handle = core.handle();
-//! let client = fcm::Client::new(&handle).unwrap();
+//! let client = fcm::Client::new().unwrap();
 //!
 //! let mut notification_builder = fcm::NotificationBuilder::new();
 //! notification_builder.title("Hey!");
@@ -81,26 +84,34 @@
 //! let mut message_builder = fcm::MessageBuilder::new("<FCM API Key>", "<registration id>");
 //! message_builder.notification(notification);
 //!
-//! let work = client.send(message_builder.finalize());
-//! let result = core.run(work);
+//! let payload = message_builder.finalize();
 //!
-//! match result {
-//!   Ok(response) => println!("message_id: {:?}", response.message_id),
-//!   Err(error) => println!("Error: {:?}", error),
-//! }
+//! tokio::run(lazy(move || {
+//!     client
+//!         .send(payload)
+//!         .map(|response| {
+//!             println!("Sent: {:?}", response);
+//!         }).map_err(|error| {
+//!             println!("Error: {:?}", error)
+//!         })
+//! }));
 //! # }
 //! ```
 
+#[allow(unused_imports)]
+#[macro_use]
+extern crate serde_json;
+
 #[macro_use] extern crate serde_derive;
-#[macro_use] extern crate serde_json;
 extern crate serde;
 extern crate erased_serde;
 extern crate hyper;
+extern crate http;
 extern crate futures;
-extern crate tokio_core;
 extern crate tokio_service;
 extern crate hyper_tls;
 extern crate native_tls;
+extern crate chrono;
 
 mod message;
 pub use message::*;
