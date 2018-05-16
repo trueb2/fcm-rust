@@ -25,59 +25,10 @@ then add this to your crate root:
 
 ```rust
 extern crate fcm;
-extern crate tokio_core;
+extern crate tokio;
 extern crate futures;
 ```
 
-## Examples:
+## Examples
 
-Here is an example to send out a FCM Message with some custom data:
-
-```rust
-use std::collections::HashMap;
-use tokio_core::reactor::Core;
-use fcm::{Client, MessageBuilder};
-
-let mut core = Core::new().unwrap();
-let handle = core.handle();
-let client = fcm::Client::new(&handle).unwrap();
-
-let mut map = HashMap::new();
-map.insert("message", "Howdy!");
-
-let mut builder = MessageBuilder::new("<FCM API Key>", "<registration id>");
-builder.data(map);
-
-let work = client.send(builder.finalize());
-
-match core.run(work) {
-    Ok(response) => println!("Sent: {:?}", response),
-    Err(error) => println!("Error: {:?}", error),
-};
-```
-
-To send a message using FCM Notifications, we first build the notification:
-
-```rust
-use std::collections::HashMap;
-use tokio_core::reactor::Core;
-use fcm::{Client, NotificationBuilder};
-
-let mut core = Core::new().unwrap();
-let handle = core.handle();
-let client = Client::new(&handle).unwrap();
-
-let mut builder = NotificationBuilder::new("Hey!");
-builder.body("Do you want to catch up later?");
-let notification = builder.finalize();
-```
-
-And then set it in the message, before sending it:
-
-```rust
-let mut builder = MessageBuilder::new("<FCM API Key>", "<registration id>");
-builder.notification(notification);
-
-let work = client.send(builder.finalize());
-let result = core.run(work);
-```
+Check out the examples directory for a simple sender.
