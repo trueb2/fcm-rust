@@ -2,32 +2,16 @@
 //! fcm
 //! ===
 //!
-//! # Usage:
-//!
-//! Add this to `Cargo.toml`:
-//!
-//! ```ignore
-//! [dependencies]
-//! fcm = "0.2.0"
-//! ```
-//!
-//! then add this to your crate root:
-//!
-//! ```ignore
-//! extern crate fcm;
-//! extern crate futures;
-//! extern crate tokio;
-//! ```
+//! A client for asynchronous sending of Firebase Cloud Messages, or Push Notifications.
 //!
 //! # Examples:
 //!
-//! Here is an example to send out a FCM Message with some custom data:
+//! To send out a FCM Message with some custom data:
 //!
 //! ```no_run
 //! # extern crate fcm;
 //! # extern crate futures;
 //! # extern crate tokio;
-//!
 //! # use std::collections::HashMap;
 //! # use futures::{future::lazy, Future};
 //! # fn main() {
@@ -57,7 +41,6 @@
 //!
 //! ```rust
 //! # extern crate fcm;
-//!
 //! # fn main() {
 //! let mut builder = fcm::NotificationBuilder::new();
 //! builder.title("Hey!");
@@ -65,13 +48,13 @@
 //! let notification = builder.finalize();
 //! # }
 //! ```
+//!
 //! And then set it in the message, before sending it:
 //!
 //! ```no_run
 //! # extern crate fcm;
 //! # extern crate futures;
 //! # extern crate tokio;
-//!
 //! # use futures::{future::lazy, Future};
 //! # fn main() {
 //! let client = fcm::Client::new().unwrap();
