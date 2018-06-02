@@ -19,8 +19,8 @@ erased-serde = "0.3"
 serde_derive = "1.0"
 futures = "0.1"
 tokio-service = "0.1"
-hyper = { git = "https://github.com/hyperium/hyper.git" }
-hyper-tls = { git = "https://github.com/hyperium/hyper-tls.git" }
+hyper = "0.12"
+hyper-tls = "0.2"
 native-tls = "0.1"
 http = "0.1"
 chrono = "0.4"
