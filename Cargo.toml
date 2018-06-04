@@ -1,6 +1,6 @@
 [package]
 name = "fcm"
-version = "0.3.1"
+version = "0.4.0"
 authors = [
   "Suvish Varghese Thoovamalayil <vishy1618@gmail.com>",
   "panicbit <panicbit.dev@gmail.com>",

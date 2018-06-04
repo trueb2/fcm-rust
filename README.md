@@ -16,7 +16,7 @@ Add this to `Cargo.toml`:
 
 ```rust
 [dependencies]
-fcm = "0.3"
+fcm = "0.4"
 tokio = "0.1"
 futures = "0.1"
 ```
