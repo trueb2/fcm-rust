@@ -1,5 +1,6 @@
 use serde_json;
-use {NotificationBuilder};
+use NotificationBuilder;
+use std::borrow::Cow;
 
 #[test]
 fn should_be_able_to_render_a_full_notification_to_json() {
@@ -14,9 +15,9 @@ fn should_be_able_to_render_a_full_notification_to_json() {
         .color("#666666")
         .click_action("spam")
         .body_loc_key("PLAY")
-        .body_loc_args(vec!["foo", "bar"])
+        .body_loc_args(&["foo", "bar"])
         .title_loc_key("PAUSE")
-        .title_loc_args(vec!["omg", "lol"]);
+        .title_loc_args(&["omg", "lol"]);
 
     let payload = serde_json::to_string(&builder.finalize()).unwrap();
 
@@ -48,7 +49,7 @@ fn should_set_notification_title() {
     builder.title("title");
     let nm = builder.finalize();
 
-    assert_eq!(nm.title, Some("title".to_string()));
+    assert_eq!(nm.title, Some("title"));
 }
 
 #[test]
@@ -61,7 +62,7 @@ fn should_set_notification_body() {
     builder.body("body");
     let nm = builder.finalize();
 
-    assert_eq!(nm.body, Some("body".to_string()));
+    assert_eq!(nm.body, Some("body"));
 }
 
 #[test]
@@ -70,7 +71,7 @@ fn should_set_notification_icon() {
     builder.icon("newicon");
     let nm = builder.finalize();
 
-    assert_eq!(nm.icon, Some("newicon".to_string()));
+    assert_eq!(nm.icon, Some("newicon"));
 }
 
 #[test]
@@ -83,7 +84,7 @@ fn should_set_notification_sound() {
     builder.sound("sound.wav");
     let nm = builder.finalize();
 
-    assert_eq!(nm.sound, Some("sound.wav".to_string()));
+    assert_eq!(nm.sound, Some("sound.wav"));
 }
 
 #[test]
@@ -96,7 +97,7 @@ fn should_set_notification_badge() {
     builder.badge("1");
     let nm = builder.finalize();
 
-    assert_eq!(nm.badge, Some("1".to_string()));
+    assert_eq!(nm.badge, Some("1"));
 }
 
 #[test]
@@ -109,7 +110,7 @@ fn should_set_notification_tag() {
     builder.tag("tag");
     let nm = builder.finalize();
 
-    assert_eq!(nm.tag, Some("tag".to_string()));
+    assert_eq!(nm.tag, Some("tag"));
 }
 
 #[test]
@@ -122,7 +123,7 @@ fn should_set_notification_color() {
     builder.color("color");
     let nm = builder.finalize();
 
-    assert_eq!(nm.color, Some("color".to_string()));
+    assert_eq!(nm.color, Some("color"));
 }
 
 #[test]
@@ -135,7 +136,7 @@ fn should_set_notification_click_action() {
     builder.click_action("action");
     let nm = builder.finalize();
 
-    assert_eq!(nm.click_action, Some("action".to_string()));
+    assert_eq!(nm.click_action, Some("action"));
 }
 
 #[test]
@@ -148,7 +149,7 @@ fn should_set_notification_body_loc_key() {
     builder.body_loc_key("key");
     let nm = builder.finalize();
 
-    assert_eq!(nm.body_loc_key, Some("key".to_string()));
+    assert_eq!(nm.body_loc_key, Some("key"));
 }
 
 #[test]
@@ -158,10 +159,10 @@ fn should_set_notification_body_loc_args() {
     assert_eq!(nm.body_loc_args, None);
 
     let mut builder = NotificationBuilder::new();
-    builder.body_loc_args(vec!["args"]);
+    builder.body_loc_args(&["args"]);
     let nm = builder.finalize();
 
-    assert_eq!(nm.body_loc_args, Some(vec!["args".to_string()]));
+    assert_eq!(nm.body_loc_args, Some(vec![Cow::from("args")]));
 }
 
 #[test]
@@ -174,7 +175,7 @@ fn should_set_notification_title_loc_key() {
     builder.title_loc_key("key");
     let nm = builder.finalize();
 
-    assert_eq!(nm.title_loc_key, Some("key".to_string()));
+    assert_eq!(nm.title_loc_key, Some("key"));
 }
 
 #[test]
@@ -184,8 +185,8 @@ fn should_set_notification_title_loc_args() {
     assert_eq!(nm.title_loc_args, None);
 
     let mut builder = NotificationBuilder::new();
-    builder.title_loc_args(vec!["args"]);
+    builder.title_loc_args(&["args"]);
     let nm = builder.finalize();
 
-    assert_eq!(nm.title_loc_args, Some(vec!["args".to_string()]));
+    assert_eq!(nm.title_loc_args, Some(vec![Cow::from("args")]));
 }

@@ -34,13 +34,13 @@ fn main() {
         message: "howdy",
     };
 
-    let mut builder = MessageBuilder::new(api_key.as_ref(), device_token.as_ref());
+    let mut builder = MessageBuilder::new(&api_key, &device_token);
     builder.data(&data).unwrap();
     let payload = builder.finalize();
+    let sending = client.send(payload);
 
     tokio::run(lazy(move || {
-        client
-            .send(payload)
+        sending
             .map(|response| {
                 println!("Sent: {:?}", response);
             }).map_err(|error| {

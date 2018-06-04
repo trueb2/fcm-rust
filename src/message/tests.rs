@@ -1,6 +1,7 @@
 use {MessageBuilder, Priority};
 use notification::NotificationBuilder;
 use serde_json;
+use std::borrow::Cow;
 
 #[test]
 fn should_create_new_message() {
@@ -56,7 +57,7 @@ fn should_add_custom_data_to_the_payload() {
 fn should_be_able_to_render_a_full_message_to_json() {
     let mut builder = MessageBuilder::new("api_key", "token");
 
-    builder.registration_ids(vec!["one", "two"])
+    builder.registration_ids(&["one", "two"])
         .collapse_key("foo")
         .priority(Priority::High)
         .content_available(false)
@@ -91,10 +92,10 @@ fn should_set_registration_ids() {
     assert_eq!(msg.body.registration_ids, None);
 
     let mut builder = MessageBuilder::new("api_key", "token");
-    builder.registration_ids(vec!["id1"]);
+    builder.registration_ids(&["id1"]);
     let msg = builder.finalize();
 
-    assert_eq!(msg.body.registration_ids, Some(vec!["id1".to_string()]));
+    assert_eq!(msg.body.registration_ids, Some(vec![Cow::from("id1")]));
 }
 
 #[test]
@@ -107,7 +108,7 @@ fn should_set_collapse_key() {
     builder.collapse_key("key");
     let msg = builder.finalize();
 
-    assert_eq!(msg.body.collapse_key, Some("key".to_string()));
+    assert_eq!(msg.body.collapse_key, Some("key"));
 }
 
 #[test]
@@ -172,7 +173,7 @@ fn should_set_restricted_package_name() {
     builder.restricted_package_name("name");
     let msg = builder.finalize();
 
-    assert_eq!(msg.body.restricted_package_name, Some("name".to_string()));
+    assert_eq!(msg.body.restricted_package_name, Some("name"));
 }
 
 #[test]

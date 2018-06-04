@@ -59,19 +59,7 @@ impl Client {
         })
     }
 
-    #[inline]
     pub fn send(&self, message: Message) -> FutureResponse {
-        self.call(message)
-    }
-}
-
-impl Service for Client {
-    type Request = Message;
-    type Response = FcmResponse;
-    type Error = response::FcmError;
-    type Future = FutureResponse;
-
-    fn call(&self, message: Self::Request) -> Self::Future {
         let payload = serde_json::to_vec(&message.body).unwrap();
 
         let mut builder = Request::builder();

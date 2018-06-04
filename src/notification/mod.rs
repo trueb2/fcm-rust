@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 #[cfg(test)]
 mod tests;
 
@@ -5,42 +7,42 @@ mod tests;
 /// corresponding `NotificationBuilder` to get an instance. You can then use 
 /// this notification instance when sending a FCM message.
 #[derive(Serialize, Debug, PartialEq)]
-pub struct Notification {
+pub struct Notification<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    badge: Option<String>,
+    badge: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    body: Option<String>,
+    body: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    body_loc_args: Option<Vec<String>>,
+    body_loc_args: Option<Vec<Cow<'a, str>>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    body_loc_key: Option<String>,
+    body_loc_key: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    click_action: Option<String>,
+    click_action: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    color: Option<String>,
+    color: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    icon: Option<String>,
+    icon: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    sound: Option<String>,
+    sound: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    tag: Option<String>,
+    tag: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    title: Option<String>,
+    title: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    title_loc_args: Option<Vec<String>>,
+    title_loc_args: Option<Vec<Cow<'a, str>>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    title_loc_key: Option<String>,
+    title_loc_key: Option<&'a str>,
 }
 
 /// A builder to get a `Notification` instance.
@@ -55,24 +57,24 @@ pub struct Notification {
 /// builder.body("3 runs to win in 1 ball");
 /// let notification = builder.finalize();
 /// ```
-pub struct NotificationBuilder {
-    title: Option<String>,
-    body: Option<String>,
-    icon: Option<String>,
-    sound: Option<String>,
-    badge: Option<String>,
-    tag: Option<String>,
-    color: Option<String>,
-    click_action: Option<String>,
-    body_loc_key: Option<String>,
-    body_loc_args: Option<Vec<String>>,
-    title_loc_key: Option<String>,
-    title_loc_args: Option<Vec<String>>,
+pub struct NotificationBuilder<'a> {
+    title: Option<&'a str>,
+    body: Option<&'a str>,
+    icon: Option<&'a str>,
+    sound: Option<&'a str>,
+    badge: Option<&'a str>,
+    tag: Option<&'a str>,
+    color: Option<&'a str>,
+    click_action: Option<&'a str>,
+    body_loc_key: Option<&'a str>,
+    body_loc_args: Option<Vec<Cow<'a, str>>>,
+    title_loc_key: Option<&'a str>,
+    title_loc_args: Option<Vec<Cow<'a, str>>>,
 }
 
-impl NotificationBuilder {
+impl<'a> NotificationBuilder<'a> {
     /// Get a new `NotificationBuilder` instance, with a title.
-    pub fn new() -> NotificationBuilder {
+    pub fn new() -> NotificationBuilder<'a> {
         NotificationBuilder {
             title: None,
             body: None,
@@ -90,106 +92,114 @@ impl NotificationBuilder {
     }
 
     // Set the title of the notification
-    pub fn title<S>(&mut self, title: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn title(&mut self, title: &'a str) -> &mut Self
     {
-        self.title = Some(title.into());
+        self.title = Some(title);
         self
     }
 
     /// Set the body of the notification
-    pub fn body<S>(&mut self, body: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn body(&mut self, body: &'a str) -> &mut Self
     {
-        self.body = Some(body.into());
+        self.body = Some(body);
         self
     }
 
     /// Set the notification icon.
-    pub fn icon<S>(&mut self, icon: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn icon(&mut self, icon: &'a str) -> &mut Self
     {
-        self.icon = Some(icon.into());
+        self.icon = Some(icon);
         self
     }
 
     /// Set the sound to be played
-    pub fn sound<S>(&mut self, sound: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn sound(&mut self, sound: &'a str) -> &mut Self
     {
-        self.sound = Some(sound.into());
+        self.sound = Some(sound);
         self
     }
 
     /// Set the badge for iOS notifications
-    pub fn badge<S>(&mut self, badge: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn badge(&mut self, badge: &'a str) -> &mut Self
     {
-        self.badge = Some(badge.into());
+        self.badge = Some(badge);
         self
     }
 
     /// Tagging a notification allows you to replace existing notifications
     /// with the same tag with this new notification
-    pub fn tag<S>(&mut self, tag: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn tag(&mut self, tag: &'a str) -> &mut Self
     {
-        self.tag = Some(tag.into());
+        self.tag = Some(tag);
         self
     }
 
     /// The color of the icon, in #rrggbb format
-    pub fn color<S>(&mut self, color: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn color(&mut self, color: &'a str) -> &mut Self
     {
-        self.color = Some(color.into());
+        self.color = Some(color);
         self
     }
 
     /// What happens when the user clicks on the notification. Refer to 
     /// https://developers.google.com/cloud-messaging/http-server-ref#table2 for
     /// details.
-    pub fn click_action<S>(&mut self, click_action: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn click_action(&mut self, click_action: &'a str) -> &mut Self
     {
-        self.click_action = Some(click_action.into());
+        self.click_action = Some(click_action);
         self
     }
 
     /// Set the body key string for localization
-    pub fn body_loc_key<S>(&mut self, body_loc_key: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn body_loc_key(&mut self, body_loc_key: &'a str) -> &mut Self
     {
-        self.body_loc_key = Some(body_loc_key.into());
+        self.body_loc_key = Some(body_loc_key);
         self
     }
 
     /// String value to replace format specifiers in the body string.
-    pub fn body_loc_args<S>(&mut self, body_loc_args: Vec<S>) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn body_loc_args<S>(
+        &mut self,
+        body_loc_args: &'a [S],
+    ) -> &mut Self
+    where
+        S: Into<Cow<'a, str>> + AsRef<str>
     {
-        self.body_loc_args = Some(body_loc_args.into_iter().map(|s| s.into()).collect());
+        let converted = body_loc_args
+            .iter()
+            .map(|a| a.as_ref().into())
+            .collect();
+
+        self.body_loc_args = Some(converted);
         self
     }
 
     /// Set the title key string for localization
-    pub fn title_loc_key<S>(&mut self, title_loc_key: S) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn title_loc_key(&mut self, title_loc_key: &'a str) -> &mut Self
     {
-        self.title_loc_key = Some(title_loc_key.into());
+        self.title_loc_key = Some(title_loc_key);
         self
     }
 
     /// String value to replace format specifiers in the title string.
-    pub fn title_loc_args<S>(&mut self, title_loc_args: Vec<S>) -> &mut NotificationBuilder
-        where S: Into<String>
+    pub fn title_loc_args<S>(
+        &mut self,
+        title_loc_args: &'a [S]
+    ) -> &mut Self
+    where
+        S: Into<Cow<'a, str>> + AsRef<str>
     {
-        self.title_loc_args = Some(title_loc_args.into_iter().map(|s| s.into()).collect());
+        let converted = title_loc_args
+            .iter()
+            .map(|a| a.as_ref().into())
+            .collect();
+
+        self.title_loc_args = Some(converted);
         self
     }
 
     /// Complete the build and get a `Notification` instance
-    pub fn finalize(self) -> Notification {
+    pub fn finalize(self) -> Notification<'a> {
         Notification {
             title: self.title,
             body: self.body,
@@ -200,9 +210,9 @@ impl NotificationBuilder {
             color: self.color,
             click_action: self.click_action,
             body_loc_key: self.body_loc_key,
-            body_loc_args: self.body_loc_args.clone(),
+            body_loc_args: self.body_loc_args,
             title_loc_key: self.title_loc_key,
-            title_loc_args: self.title_loc_args.clone(),
+            title_loc_args: self.title_loc_args,
         }
     }
 }
