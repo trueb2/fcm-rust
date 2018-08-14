@@ -98,10 +98,10 @@ impl Client {
                             StatusCode::OK => {
                                 let fcm_response: FcmResponse = serde_json::from_str(&body).unwrap();
 
-                                match fcm_response.error.as_ref().map(String::as_ref) {
-                                    Some("Unavailable") =>
+                                match fcm_response.error {
+                                    Some(ErrorReason::Unavailable) =>
                                         err(response::FcmError::ServerError(retry_after)),
-                                    Some("InternalServerError") =>
+                                    Some(ErrorReason::InternalServerError) =>
                                         err(response::FcmError::ServerError(retry_after)),
                                     _ =>
                                         ok(fcm_response)
