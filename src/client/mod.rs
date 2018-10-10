@@ -23,9 +23,8 @@ use futures::{
 };
 
 use message::Message;
-use hyper_tls::HttpsConnector;
+use hyper_tls::{self, HttpsConnector};
 use serde_json;
-use native_tls;
 
 pub struct Client {
     http_client: HttpClient<HttpsConnector<HttpConnector>>,
@@ -50,7 +49,7 @@ impl Future for FutureResponse {
 
 impl Client {
     /// Get a new instance of Client.
-    pub fn new() -> Result<Client, native_tls::Error> {
+    pub fn new() -> Result<Client, hyper_tls::Error> {
         let mut http_client = HttpClient::builder();
         http_client.keep_alive(true);
 

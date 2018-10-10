@@ -93,7 +93,6 @@ extern crate http;
 extern crate futures;
 extern crate tokio_service;
 extern crate hyper_tls;
-extern crate native_tls;
 extern crate chrono;
 
 mod message;
