@@ -32,3 +32,7 @@ extern crate futures;
 ## Examples
 
 Check out the examples directory for a simple sender.
+
+To see it used in a real project, take a look to the [XORC
+Notifications](https://github.com/xray-tech/xorc-notifications), which is a
+full-fledged consumer for sending push notifications.
