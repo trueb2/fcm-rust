@@ -1,9 +1,6 @@
-extern crate fcm;
-extern crate argparse;
-extern crate futures;
-extern crate tokio;
 #[macro_use] extern crate serde_derive;
 
+use tokio;
 use argparse::{ArgumentParser, Store};
 use fcm::{MessageBuilder, Client};
 use futures::{

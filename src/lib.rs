@@ -9,9 +9,6 @@
 //! To send out a FCM Message with some custom data:
 //!
 //! ```no_run
-//! # extern crate fcm;
-//! # extern crate futures;
-//! # extern crate tokio;
 //! # use std::collections::HashMap;
 //! # use futures::{future::lazy, Future};
 //! # fn main() {
@@ -40,7 +37,6 @@
 //! To send a message using FCM Notifications, we first build the notification:
 //!
 //! ```rust
-//! # extern crate fcm;
 //! # fn main() {
 //! let mut builder = fcm::NotificationBuilder::new();
 //! builder.title("Hey!");
@@ -52,9 +48,6 @@
 //! And then set it in the message, before sending it:
 //!
 //! ```no_run
-//! # extern crate fcm;
-//! # extern crate futures;
-//! # extern crate tokio;
 //! # use futures::{future::lazy, Future};
 //! # fn main() {
 //! let client = fcm::Client::new().unwrap();
@@ -85,21 +78,13 @@
 #[macro_use]
 extern crate serde_json;
 
-#[macro_use] extern crate serde_derive;
-extern crate serde;
-extern crate erased_serde;
-extern crate hyper;
-extern crate http;
-extern crate futures;
-extern crate tokio_service;
-extern crate hyper_tls;
-extern crate chrono;
+#[macro_use]
+extern crate serde_derive;
 
 mod message;
-pub use message::*;
+pub use crate::message::*;
 mod notification;
-pub use notification::*;
+pub use crate::notification::*;
 mod client;
-pub use client::*;
-
-pub use client::response::FcmError as Error;
+pub use crate::client::*;
+pub use crate::client::response::FcmError as Error;

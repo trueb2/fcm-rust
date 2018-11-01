@@ -1,5 +1,5 @@
 use serde_json;
-use NotificationBuilder;
+use crate::NotificationBuilder;
 use std::borrow::Cow;
 
 #[test]

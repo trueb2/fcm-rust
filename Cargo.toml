@@ -11,6 +11,7 @@ homepage = "https://github.com/panicbit/fcm-rust"
 repository = "https://github.com/panicbit/fcm-rust"
 documentation = "https://panicbit.github.io/fcm-rust/fcm/"
 keywords = ["fcm", "firebase", "cloud", "messaging", "tokio"]
+edition = "2018"
 
 [dependencies]
 serde = "1.0"

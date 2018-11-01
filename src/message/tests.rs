@@ -1,5 +1,5 @@
-use {MessageBuilder, Priority};
-use notification::NotificationBuilder;
+use crate::{MessageBuilder, Priority};
+use crate::notification::NotificationBuilder;
 use serde_json;
 use std::borrow::Cow;
 
