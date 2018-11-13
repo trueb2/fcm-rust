@@ -6,10 +6,7 @@ extern crate tokio;
 
 use argparse::{ArgumentParser, Store};
 use fcm::{MessageBuilder, Client};
-use futures::{
-    future::lazy,
-    Future,
-};
+use tokio::runtime::current_thread;
 
 #[derive(Serialize)]
 struct CustomData {
@@ -37,14 +34,9 @@ fn main() {
     let mut builder = MessageBuilder::new(&api_key, &device_token);
     builder.data(&data).unwrap();
     let payload = builder.finalize();
-    let sending = client.send(payload);
 
-    tokio::run(lazy(move || {
-        sending
-            .map(|response| {
-                println!("Sent: {:?}", response);
-            }).map_err(|error| {
-                println!("Error: {:?}", error)
-            })
-    }));
+    match current_thread::block_on_all(client.send(payload)) {
+        Ok(response) => println!("Sent: {:?}", response),
+        Err(error) => println!("Error: {:?}", error)
+    }
 }

@@ -74,7 +74,9 @@ impl Client {
         let send_request = self
             .http_client
             .request(request)
-            .map_err(|_| {
+            .map_err(|e| {
+                println!("{:?}", e);
+
                 response::FcmError::ServerError(None)
             });
 
