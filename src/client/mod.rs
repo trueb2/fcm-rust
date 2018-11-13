@@ -74,11 +74,7 @@ impl Client {
         let send_request = self
             .http_client
             .request(request)
-            .map_err(|e| {
-                println!("{:?}", e);
-
-                response::FcmError::ServerError(None)
-            });
+            .map_err(|_| response::FcmError::ServerError(None));
 
         let fcm_f = send_request.and_then(move |response| {
             let response_status = response.status().clone();
