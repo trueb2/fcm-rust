@@ -146,11 +146,7 @@ pub enum FcmError {
     ServerError(Option<RetryAfter>),
 }
 
-impl Error for FcmError {
-    
-
-
-}
+impl Error for FcmError {}
 
 impl fmt::Display for FcmError {
    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
