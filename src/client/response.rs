@@ -1,3 +1,5 @@
+use std::error::Error;
+use std::fmt;
 pub use chrono::{DateTime, FixedOffset, Duration};
 
 /// A description of what went wrong with the push notification.
@@ -142,6 +144,19 @@ pub enum FcmError {
     ///
     /// Senders that cause problems risk being blacklisted.
     ServerError(Option<RetryAfter>),
+}
+
+impl Error for FcmError {}
+
+impl fmt::Display for FcmError {
+   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+       match self {
+           FcmError::Unauthorized => 
+               write!(f, "authorization header missing or with invalid syntax in HTTP request"),
+           FcmError::InvalidMessage(ref s) => write!(f, "invalid message {}", s),
+           FcmError::ServerError(_) => write!(f, "the server couldn't process the request")
+       }
+   }
 }
 
 #[derive(PartialEq, Debug)]
