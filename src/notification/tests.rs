@@ -1,6 +1,6 @@
 use serde_json;
 use std::borrow::Cow;
-use NotificationBuilder;
+use crate::NotificationBuilder;
 
 #[test]
 fn should_be_able_to_render_a_full_notification_to_json() {

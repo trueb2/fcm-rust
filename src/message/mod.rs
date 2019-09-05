@@ -2,7 +2,7 @@
 mod tests;
 
 use erased_serde::Serialize;
-use notification::Notification;
+use crate::notification::Notification;
 use serde_json::{self, Value};
 use std::borrow::Cow;
 
@@ -190,7 +190,7 @@ impl<'a> MessageBuilder<'a> {
     /// builder.data(&map);
     /// let message = builder.finalize();
     /// ```
-    pub fn data(&mut self, data: &Serialize) -> Result<&mut Self, serde_json::Error> {
+    pub fn data(&mut self, data: &dyn Serialize) -> Result<&mut Self, serde_json::Error> {
         self.data = Some(serde_json::to_value(data)?);
         Ok(self)
     }

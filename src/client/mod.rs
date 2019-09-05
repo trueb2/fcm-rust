@@ -1,6 +1,6 @@
 pub mod response;
 
-pub use client::response::*;
+pub use crate::client::response::*;
 pub use tokio_service::Service;
 
 use futures::{
@@ -16,14 +16,14 @@ use hyper::{
 use std::fmt;
 
 use hyper_tls::{self, HttpsConnector};
-use message::Message;
+use crate::message::Message;
 use serde_json;
 
 pub struct Client {
     http_client: HttpClient<HttpsConnector<HttpConnector>>,
 }
 
-pub struct FutureResponse(Box<Future<Item = FcmResponse, Error = FcmError> + 'static + Send>);
+pub struct FutureResponse(Box<dyn Future<Item = FcmResponse, Error = FcmError> + 'static + Send>);
 
 impl fmt::Debug for FutureResponse {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
