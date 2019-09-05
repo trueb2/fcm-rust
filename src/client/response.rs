@@ -1,6 +1,6 @@
+pub use chrono::{DateTime, Duration, FixedOffset};
 use std::error::Error;
 use std::fmt;
-pub use chrono::{DateTime, FixedOffset, Duration};
 
 /// A description of what went wrong with the push notification.
 /// Referred from [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/http-server-ref#table9)
@@ -149,14 +149,16 @@ pub enum FcmError {
 impl Error for FcmError {}
 
 impl fmt::Display for FcmError {
-   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-       match self {
-           FcmError::Unauthorized => 
-               write!(f, "authorization header missing or with invalid syntax in HTTP request"),
-           FcmError::InvalidMessage(ref s) => write!(f, "invalid message {}", s),
-           FcmError::ServerError(_) => write!(f, "the server couldn't process the request")
-       }
-   }
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            FcmError::Unauthorized => write!(
+                f,
+                "authorization header missing or with invalid syntax in HTTP request"
+            ),
+            FcmError::InvalidMessage(ref s) => write!(f, "invalid message {}", s),
+            FcmError::ServerError(_) => write!(f, "the server couldn't process the request"),
+        }
+    }
 }
 
 #[derive(PartialEq, Debug)]
@@ -174,9 +176,7 @@ impl RetryAfter {
             Some(RetryAfter::Delay(Duration::seconds(seconds)))
         } else {
             DateTime::parse_from_rfc2822(header_value)
-                .map(|date_time| {
-                    RetryAfter::DateTime(date_time)
-                })
+                .map(|date_time| RetryAfter::DateTime(date_time))
                 .ok()
         }
     }
@@ -202,8 +202,14 @@ mod tests {
             ("InvalidTtl", ErrorReason::InvalidTtl),
             ("Unavailable", ErrorReason::Unavailable),
             ("InternalServerError", ErrorReason::InternalServerError),
-            ("DeviceMessageRateExceeded", ErrorReason::DeviceMessageRateExceeded),
-            ("TopicsMessageRateExceeded", ErrorReason::TopicsMessageRateExceeded),
+            (
+                "DeviceMessageRateExceeded",
+                ErrorReason::DeviceMessageRateExceeded,
+            ),
+            (
+                "TopicsMessageRateExceeded",
+                ErrorReason::TopicsMessageRateExceeded,
+            ),
             ("InvalidApnsCredential", ErrorReason::InvalidApnsCredential),
         ];
 
@@ -223,10 +229,7 @@ mod tests {
                 fcm_response.results.unwrap()[0].error,
             );
 
-            assert_eq!(
-                Some(error_enum),
-                fcm_response.error,
-            )
+            assert_eq!(Some(error_enum), fcm_response.error,)
         }
     }
 

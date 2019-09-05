@@ -85,15 +85,16 @@
 #[macro_use]
 extern crate serde_json;
 
-#[macro_use] extern crate serde_derive;
-extern crate serde;
-extern crate erased_serde;
-extern crate hyper;
-extern crate http;
-extern crate futures;
-extern crate tokio_service;
-extern crate hyper_tls;
+#[macro_use]
+extern crate serde_derive;
 extern crate chrono;
+extern crate erased_serde;
+extern crate futures;
+extern crate http;
+extern crate hyper;
+extern crate hyper_tls;
+extern crate serde;
+extern crate tokio_service;
 
 mod message;
 pub use message::*;
