@@ -14,6 +14,8 @@
 The current master and alpha versions use `std::future` with async/await syntax,
 and requires a nightly compiler. 0.6.0 works with stable and futures 0.1.
 
+Bugfixes for the stable release should go against the `v0.6` branch.
+
 ## Examples
 
 Check out the examples directory for a simple sender.
