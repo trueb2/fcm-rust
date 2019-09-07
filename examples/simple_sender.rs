@@ -1,20 +1,18 @@
-extern crate argparse;
-extern crate fcm;
-extern crate futures;
-extern crate tokio;
 #[macro_use]
 extern crate serde_derive;
 
 use argparse::{ArgumentParser, Store};
 use fcm::{Client, MessageBuilder};
-use tokio::runtime::current_thread;
 
 #[derive(Serialize)]
 struct CustomData {
     message: &'static str,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    pretty_env_logger::init();
+
     let mut device_token = String::new();
     let mut api_key = String::new();
 
@@ -29,15 +27,13 @@ fn main() {
     }
 
     let client = Client::new().unwrap();
-
     let data = CustomData { message: "howdy" };
 
     let mut builder = MessageBuilder::new(&api_key, &device_token);
     builder.data(&data).unwrap();
-    let payload = builder.finalize();
 
-    match current_thread::block_on_all(client.send(payload)) {
-        Ok(response) => println!("Sent: {:?}", response),
-        Err(error) => println!("Error: {:?}", error),
-    }
+    let response = client.send(builder.finalize()).await?;
+    println!("Sent: {:?}", response);
+
+    Ok(())
 }

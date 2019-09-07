@@ -161,6 +161,12 @@ impl fmt::Display for FcmError {
     }
 }
 
+impl From<hyper::error::Error> for FcmError {
+    fn from(_: hyper::error::Error) -> Self {
+        Self::ServerError(None)
+    }
+}
+
 #[derive(PartialEq, Debug)]
 pub enum RetryAfter {
     /// Amount of time to wait until retrying the message is allowed.
