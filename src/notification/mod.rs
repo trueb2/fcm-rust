@@ -3,8 +3,8 @@ use std::borrow::Cow;
 #[cfg(test)]
 mod tests;
 
-/// This struct represents a FCM notification. Use the 
-/// corresponding `NotificationBuilder` to get an instance. You can then use 
+/// This struct represents a FCM notification. Use the
+/// corresponding `NotificationBuilder` to get an instance. You can then use
 /// this notification instance when sending a FCM message.
 #[derive(Serialize, Debug, PartialEq)]
 pub struct Notification<'a> {
@@ -92,107 +92,85 @@ impl<'a> NotificationBuilder<'a> {
     }
 
     // Set the title of the notification
-    pub fn title(&mut self, title: &'a str) -> &mut Self
-    {
+    pub fn title(&mut self, title: &'a str) -> &mut Self {
         self.title = Some(title);
         self
     }
 
     /// Set the body of the notification
-    pub fn body(&mut self, body: &'a str) -> &mut Self
-    {
+    pub fn body(&mut self, body: &'a str) -> &mut Self {
         self.body = Some(body);
         self
     }
 
     /// Set the notification icon.
-    pub fn icon(&mut self, icon: &'a str) -> &mut Self
-    {
+    pub fn icon(&mut self, icon: &'a str) -> &mut Self {
         self.icon = Some(icon);
         self
     }
 
     /// Set the sound to be played
-    pub fn sound(&mut self, sound: &'a str) -> &mut Self
-    {
+    pub fn sound(&mut self, sound: &'a str) -> &mut Self {
         self.sound = Some(sound);
         self
     }
 
     /// Set the badge for iOS notifications
-    pub fn badge(&mut self, badge: &'a str) -> &mut Self
-    {
+    pub fn badge(&mut self, badge: &'a str) -> &mut Self {
         self.badge = Some(badge);
         self
     }
 
     /// Tagging a notification allows you to replace existing notifications
     /// with the same tag with this new notification
-    pub fn tag(&mut self, tag: &'a str) -> &mut Self
-    {
+    pub fn tag(&mut self, tag: &'a str) -> &mut Self {
         self.tag = Some(tag);
         self
     }
 
     /// The color of the icon, in #rrggbb format
-    pub fn color(&mut self, color: &'a str) -> &mut Self
-    {
+    pub fn color(&mut self, color: &'a str) -> &mut Self {
         self.color = Some(color);
         self
     }
 
-    /// What happens when the user clicks on the notification. Refer to 
+    /// What happens when the user clicks on the notification. Refer to
     /// https://developers.google.com/cloud-messaging/http-server-ref#table2 for
     /// details.
-    pub fn click_action(&mut self, click_action: &'a str) -> &mut Self
-    {
+    pub fn click_action(&mut self, click_action: &'a str) -> &mut Self {
         self.click_action = Some(click_action);
         self
     }
 
     /// Set the body key string for localization
-    pub fn body_loc_key(&mut self, body_loc_key: &'a str) -> &mut Self
-    {
+    pub fn body_loc_key(&mut self, body_loc_key: &'a str) -> &mut Self {
         self.body_loc_key = Some(body_loc_key);
         self
     }
 
     /// String value to replace format specifiers in the body string.
-    pub fn body_loc_args<S>(
-        &mut self,
-        body_loc_args: &'a [S],
-    ) -> &mut Self
+    pub fn body_loc_args<S>(&mut self, body_loc_args: &'a [S]) -> &mut Self
     where
-        S: Into<Cow<'a, str>> + AsRef<str>
+        S: Into<Cow<'a, str>> + AsRef<str>,
     {
-        let converted = body_loc_args
-            .iter()
-            .map(|a| a.as_ref().into())
-            .collect();
+        let converted = body_loc_args.iter().map(|a| a.as_ref().into()).collect();
 
         self.body_loc_args = Some(converted);
         self
     }
 
     /// Set the title key string for localization
-    pub fn title_loc_key(&mut self, title_loc_key: &'a str) -> &mut Self
-    {
+    pub fn title_loc_key(&mut self, title_loc_key: &'a str) -> &mut Self {
         self.title_loc_key = Some(title_loc_key);
         self
     }
 
     /// String value to replace format specifiers in the title string.
-    pub fn title_loc_args<S>(
-        &mut self,
-        title_loc_args: &'a [S]
-    ) -> &mut Self
+    pub fn title_loc_args<S>(&mut self, title_loc_args: &'a [S]) -> &mut Self
     where
-        S: Into<Cow<'a, str>> + AsRef<str>
+        S: Into<Cow<'a, str>> + AsRef<str>,
     {
-        let converted = title_loc_args
-            .iter()
-            .map(|a| a.as_ref().into())
-            .collect();
+        let converted = title_loc_args.iter().map(|a| a.as_ref().into()).collect();
 
         self.title_loc_args = Some(converted);
         self

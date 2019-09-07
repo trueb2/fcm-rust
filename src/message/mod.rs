@@ -1,15 +1,16 @@
 #[cfg(test)]
 mod tests;
 
-use notification::Notification;
 use erased_serde::Serialize;
+use crate::notification::Notification;
 use serde_json::{self, Value};
 use std::borrow::Cow;
 
 #[derive(Serialize, PartialEq, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum Priority {
-    Normal, High
+    Normal,
+    High,
 }
 
 #[derive(Serialize, Debug, PartialEq)]
@@ -112,17 +113,11 @@ impl<'a> MessageBuilder<'a> {
     }
 
     /// String value to replace format specifiers in the body string.
-    pub fn registration_ids<S>(
-        &mut self,
-        ids: &'a [S],
-    ) -> &mut Self
+    pub fn registration_ids<S>(&mut self, ids: &'a [S]) -> &mut Self
     where
-        S: Into<Cow<'a, str>> + AsRef<str>
+        S: Into<Cow<'a, str>> + AsRef<str>,
     {
-        let converted = ids
-            .iter()
-            .map(|a| a.as_ref().into())
-            .collect();
+        let converted = ids.iter().map(|a| a.as_ref().into()).collect();
 
         self.registration_ids = Some(converted);
         self
@@ -195,7 +190,7 @@ impl<'a> MessageBuilder<'a> {
     /// builder.data(&map);
     /// let message = builder.finalize();
     /// ```
-    pub fn data(&mut self, data: &Serialize) -> Result<&mut Self, serde_json::Error> {
+    pub fn data(&mut self, data: &dyn Serialize) -> Result<&mut Self, serde_json::Error> {
         self.data = Some(serde_json::to_value(data)?);
         Ok(self)
     }
@@ -209,7 +204,7 @@ impl<'a> MessageBuilder<'a> {
     /// builder.title("Hey!");
     /// builder.body("Do you want to catch up later?");
     /// let notification = builder.finalize();
-    /// 
+    ///
     /// let mut builder = MessageBuilder::new("<FCM API Key>", "<registration id>");
     /// builder.notification(notification);
     /// let message = builder.finalize();
@@ -235,7 +230,7 @@ impl<'a> MessageBuilder<'a> {
                 dry_run: self.dry_run,
                 data: self.data.clone(),
                 notification: self.notification,
-            }
+            },
         }
     }
 }

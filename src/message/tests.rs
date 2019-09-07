@@ -1,7 +1,7 @@
-use {MessageBuilder, Priority};
-use notification::NotificationBuilder;
+use crate::notification::NotificationBuilder;
 use serde_json;
 use std::borrow::Cow;
+use crate::{MessageBuilder, Priority};
 
 #[test]
 fn should_create_new_message() {
@@ -17,7 +17,8 @@ fn should_leave_nones_out_of_the_json() {
 
     let expected_payload = json!({
         "to": "token"
-    }).to_string();
+    })
+    .to_string();
 
     assert_eq!(expected_payload, payload);
 }
@@ -34,7 +35,7 @@ fn should_add_custom_data_to_the_payload() {
 
     let data = CustomData {
         foo: "bar",
-        bar: false
+        bar: false,
     };
 
     builder.data(&data).unwrap();
@@ -48,7 +49,8 @@ fn should_add_custom_data_to_the_payload() {
             "bar": false,
         },
         "to": "token"
-    }).to_string();
+    })
+    .to_string();
 
     assert_eq!(expected_payload, payload);
 }
@@ -57,7 +59,8 @@ fn should_add_custom_data_to_the_payload() {
 fn should_be_able_to_render_a_full_message_to_json() {
     let mut builder = MessageBuilder::new("api_key", "token");
 
-    builder.registration_ids(&["one", "two"])
+    builder
+        .registration_ids(&["one", "two"])
         .collapse_key("foo")
         .priority(Priority::High)
         .content_available(false)
@@ -80,7 +83,8 @@ fn should_be_able_to_render_a_full_message_to_json() {
         "restricted_package_name": "pkg",
         "dry_run": false,
         "notification": {},
-    }).to_string();
+    })
+    .to_string();
 
     assert_eq!(expected_payload, payload);
 }

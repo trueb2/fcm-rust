@@ -9,13 +9,10 @@
 //! To send out a FCM Message with some custom data:
 //!
 //! ```no_run
-//! # extern crate fcm;
-//! # extern crate futures;
-//! # extern crate tokio;
 //! # use std::collections::HashMap;
-//! # use futures::{future::lazy, Future};
-//! # fn main() {
-//! let client = fcm::Client::new().unwrap();
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+//! let client = fcm::Client::new()?;
 //!
 //! let mut map = HashMap::new();
 //! map.insert("message", "Howdy!");
@@ -23,24 +20,15 @@
 //! let mut builder = fcm::MessageBuilder::new("<FCM API Key>", "<registration id>");
 //! builder.data(&map);
 //!
-//! let payload = builder.finalize();
-//!
-//! tokio::run(lazy(move || {
-//!     client
-//!         .send(payload)
-//!         .map(|response| {
-//!             println!("Sent: {:?}", response);
-//!         }).map_err(|error| {
-//!             println!("Error: {:?}", error)
-//!         })
-//! }));
+//! let response = client.send(builder.finalize()).await?;
+//! println!("Sent: {:?}", response);
+//! # Ok(())
 //! # }
 //! ```
 //!
 //! To send a message using FCM Notifications, we first build the notification:
 //!
 //! ```rust
-//! # extern crate fcm;
 //! # fn main() {
 //! let mut builder = fcm::NotificationBuilder::new();
 //! builder.title("Hey!");
@@ -52,12 +40,9 @@
 //! And then set it in the message, before sending it:
 //!
 //! ```no_run
-//! # extern crate fcm;
-//! # extern crate futures;
-//! # extern crate tokio;
-//! # use futures::{future::lazy, Future};
-//! # fn main() {
-//! let client = fcm::Client::new().unwrap();
+//! # #[tokio::main]
+//! # async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+//! let client = fcm::Client::new()?;
 //!
 //! let mut notification_builder = fcm::NotificationBuilder::new();
 //! notification_builder.title("Hey!");
@@ -67,17 +52,9 @@
 //! let mut message_builder = fcm::MessageBuilder::new("<FCM API Key>", "<registration id>");
 //! message_builder.notification(notification);
 //!
-//! let payload = message_builder.finalize();
-//!
-//! tokio::run(lazy(move || {
-//!     client
-//!         .send(payload)
-//!         .map(|response| {
-//!             println!("Sent: {:?}", response);
-//!         }).map_err(|error| {
-//!             println!("Error: {:?}", error)
-//!         })
-//! }));
+//! let response = client.send(message_builder.finalize()).await?;
+//! println!("Sent: {:?}", response);
+//! # Ok(())
 //! # }
 //! ```
 
@@ -85,21 +62,14 @@
 #[macro_use]
 extern crate serde_json;
 
-#[macro_use] extern crate serde_derive;
-extern crate serde;
-extern crate erased_serde;
-extern crate hyper;
-extern crate http;
-extern crate futures;
-extern crate tokio_service;
-extern crate hyper_tls;
-extern crate chrono;
+#[macro_use]
+extern crate serde_derive;
 
 mod message;
-pub use message::*;
+pub use crate::message::*;
 mod notification;
-pub use notification::*;
+pub use crate::notification::*;
 mod client;
-pub use client::*;
+pub use crate::client::*;
 
-pub use client::response::FcmError as Error;
+pub use crate::client::response::FcmError as Error;

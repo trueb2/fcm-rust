@@ -9,25 +9,12 @@
 [travis]: https://travis-ci.org/panicbit/fcm-rust
 [coveralls]: https://coveralls.io/github/panicbit/fcm-rust
 
+## Alpha status
 
-## Usage
+The current master and alpha versions use `std::future` with async/await syntax,
+and requires a nightly compiler. 0.6.0 works with stable and futures 0.1.
 
-Add this to `Cargo.toml`:
-
-```rust
-[dependencies]
-fcm = "0.6"
-tokio = "0.1"
-futures = "0.1"
-```
-
-then add this to your crate root:
-
-```rust
-extern crate fcm;
-extern crate tokio;
-extern crate futures;
-```
+Bugfixes for the stable release should go against the `v0.6` branch.
 
 ## Examples
 

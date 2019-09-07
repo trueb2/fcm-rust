@@ -1,12 +1,13 @@
 use serde_json;
-use NotificationBuilder;
 use std::borrow::Cow;
+use crate::NotificationBuilder;
 
 #[test]
 fn should_be_able_to_render_a_full_notification_to_json() {
     let mut builder = NotificationBuilder::new();
 
-    builder.title("foo")
+    builder
+        .title("foo")
         .body("bar")
         .icon("gif")
         .sound("pling")
@@ -34,7 +35,8 @@ fn should_be_able_to_render_a_full_notification_to_json() {
         "title": "foo",
         "title_loc_args": ["omg", "lol"],
         "title_loc_key": "PAUSE"
-    }).to_string();
+    })
+    .to_string();
 
     assert_eq!(expected_payload, payload);
 }
