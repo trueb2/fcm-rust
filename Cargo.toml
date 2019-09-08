@@ -1,6 +1,6 @@
 [package]
 name = "fcm"
-version = "0.7.0-alpha.1"
+version = "0.7.0-alpha.2"
 authors = [
   "Suvish Varghese Thoovamalayil <vishy1618@gmail.com>",
   "panicbit <panicbit.dev@gmail.com>",
@@ -9,8 +9,8 @@ description = "An API to talk to FCM (Firebase Cloud Messaging) in Rust"
 license = "MIT"
 homepage = "https://github.com/panicbit/fcm-rust"
 repository = "https://github.com/panicbit/fcm-rust"
-documentation = "https://panicbit.github.io/fcm-rust/fcm/"
-keywords = ["fcm", "firebase", "cloud", "messaging"]
+documentation = "https://docs.rs/fcm/"
+keywords = ["fcm", "firebase", "notification"]
 edition = "2018"
 
 [dependencies]

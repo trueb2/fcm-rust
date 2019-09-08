@@ -12,6 +12,7 @@ use hyper_tls::{self, HttpsConnector};
 use crate::message::Message;
 use serde_json;
 
+/// An async client for sending the notification payload.
 pub struct Client {
     http_client: HttpClient<HttpsConnector<HttpConnector>>,
 }
