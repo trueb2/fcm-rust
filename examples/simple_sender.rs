@@ -26,11 +26,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         ap.parse_args_or_exit();
     }
 
-    let client = Client::new().unwrap();
+    let client = Client::new();
     let data = CustomData { message: "howdy" };
 
     let mut builder = MessageBuilder::new(&api_key, &device_token);
-    builder.data(&data).unwrap();
+    builder.data(&data)?;
 
     let response = client.send(builder.finalize()).await?;
     println!("Sent: {:?}", response);

@@ -2,7 +2,7 @@ pub mod response;
 
 pub use crate::client::response::*;
 
-use futures::stream::TryStreamExt;
+use futures::stream::StreamExt;
 use http::header::{AUTHORIZATION, CONTENT_LENGTH, CONTENT_TYPE, RETRY_AFTER};
 use hyper::{
     client::{Client as HttpClient, HttpConnector},
@@ -19,29 +19,28 @@ pub struct Client {
 
 impl Client {
     /// Get a new instance of Client.
-    pub fn new() -> Result<Client, hyper_tls::Error> {
+    pub fn new() -> Client {
         let mut http_client = HttpClient::builder();
         http_client.keep_alive(true);
 
-        Ok(Client {
-            http_client: http_client.build(HttpsConnector::new().unwrap()),
-        })
+        Client {
+            http_client: http_client.build(HttpsConnector::new()),
+        }
     }
 
     /// Try sending a `Message` to FCM.
     pub async fn send(&self, message: Message<'_>) -> Result<FcmResponse, FcmError> {
         let payload = serde_json::to_vec(&message.body).unwrap();
 
-        let mut builder = Request::builder();
-
-        builder.method("POST");
-        builder.header(CONTENT_TYPE, "application/json");
-        builder.header(
-            CONTENT_LENGTH,
-            format!("{}", payload.len() as u64).as_bytes(),
-        );
-        builder.header(AUTHORIZATION, format!("key={}", message.api_key).as_bytes());
-        builder.uri("https://fcm.googleapis.com/fcm/send");
+        let builder = Request::builder()
+            .method("POST")
+            .header(CONTENT_TYPE, "application/json")
+            .header(
+                CONTENT_LENGTH,
+                format!("{}", payload.len() as u64).as_bytes(),
+            )
+            .header(AUTHORIZATION, format!("key={}", message.api_key).as_bytes())
+            .uri("https://fcm.googleapis.com/fcm/send");
 
         let request = builder.body(Body::from(payload)).unwrap();
         let response = self.http_client.request(request).await?;
@@ -53,7 +52,19 @@ impl Client {
             .and_then(|ra| ra.to_str().ok())
             .and_then(|ra| RetryAfter::from_str(ra));
 
-        let body = response.into_body().try_concat().await?;
+        let content_length: usize = response
+            .headers()
+            .get(CONTENT_LENGTH)
+            .and_then(|s| s.to_str().ok())
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(0);
+
+        let mut body: Vec<u8> = Vec::with_capacity(content_length);
+        let mut chunks = response.into_body();
+
+        while let Some(chunk) = chunks.next().await {
+            body.extend_from_slice(&chunk?);
+        }
 
         match response_status {
             StatusCode::OK => {

@@ -12,7 +12,7 @@
 //! # use std::collections::HashMap;
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-//! let client = fcm::Client::new()?;
+//! let client = fcm::Client::new();
 //!
 //! let mut map = HashMap::new();
 //! map.insert("message", "Howdy!");
@@ -42,7 +42,7 @@
 //! ```no_run
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-//! let client = fcm::Client::new()?;
+//! let client = fcm::Client::new();
 //!
 //! let mut notification_builder = fcm::NotificationBuilder::new();
 //! notification_builder.title("Hey!");
