@@ -9,17 +9,10 @@
 [travis]: https://travis-ci.org/panicbit/fcm-rust
 [coveralls]: https://coveralls.io/github/panicbit/fcm-rust
 
-## Alpha status
+## Requirements
 
-The current master and alpha versions use `std::future` with async/await syntax,
-and requires a beta compiler of version 1.39.0. 0.6.0 works with stable and futures 0.1.
-
-Bugfixes for the stable release should go against the `v0.6` branch.
+Needs a Tokio executor version 0.2 or later and Rust compiler version 1.39.0 or later.
 
 ## Examples
 
 Check out the examples directory for a simple sender.
-
-To see it used in a real project, take a look to the [XORC
-Notifications](https://github.com/xray-tech/xorc-notifications), which is a
-full-fledged consumer for sending push notifications.
