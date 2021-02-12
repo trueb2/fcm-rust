@@ -9,6 +9,8 @@
 [travis]: https://travis-ci.org/panicbit/fcm-rust
 [coveralls]: https://coveralls.io/github/panicbit/fcm-rust
 
+[Matrix chat](https://matrix.to/#/!lcXPcLYqIXRyoxzJmp:nauk.io?via=nauk.io)
+
 ## Requirements
 
 Needs a Tokio executor version 1.0 or later and Rust compiler version 1.45.0 or later.
