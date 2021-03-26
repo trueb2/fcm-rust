@@ -5,11 +5,16 @@ pub use crate::client::response::*;
 use crate::message::Message;
 use reqwest::header::{AUTHORIZATION, CONTENT_LENGTH, CONTENT_TYPE, RETRY_AFTER};
 use reqwest::{Body, StatusCode};
-use serde_json;
 
 /// An async client for sending the notification payload.
 pub struct Client {
     http_client: reqwest::Client,
+}
+
+impl Default for Client {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Client {
@@ -31,10 +36,7 @@ impl Client {
             .http_client
             .post("https://fcm.googleapis.com/fcm/send")
             .header(CONTENT_TYPE, "application/json")
-            .header(
-                CONTENT_LENGTH,
-                format!("{}", payload.len() as u64).as_bytes(),
-            )
+            .header(CONTENT_LENGTH, format!("{}", payload.len() as u64).as_bytes())
             .header(AUTHORIZATION, format!("key={}", message.api_key).as_bytes())
             .body(Body::from(payload))
             .build()?;
@@ -46,30 +48,22 @@ impl Client {
             .headers()
             .get(RETRY_AFTER)
             .and_then(|ra| ra.to_str().ok())
-            .and_then(|ra| RetryAfter::from_str(ra));
+            .and_then(|ra| ra.parse::<RetryAfter>().ok());
 
         match response_status {
             StatusCode::OK => {
                 let fcm_response: FcmResponse = response.json().await.unwrap();
 
                 match fcm_response.error {
-                    Some(ErrorReason::Unavailable) => {
-                        Err(response::FcmError::ServerError(retry_after))
-                    }
-                    Some(ErrorReason::InternalServerError) => {
-                        Err(response::FcmError::ServerError(retry_after))
-                    }
+                    Some(ErrorReason::Unavailable) => Err(response::FcmError::ServerError(retry_after)),
+                    Some(ErrorReason::InternalServerError) => Err(response::FcmError::ServerError(retry_after)),
                     _ => Ok(fcm_response),
                 }
             }
             StatusCode::UNAUTHORIZED => Err(response::FcmError::Unauthorized),
-            StatusCode::BAD_REQUEST => Err(response::FcmError::InvalidMessage(
-                "Bad Request".to_string(),
-            )),
+            StatusCode::BAD_REQUEST => Err(response::FcmError::InvalidMessage("Bad Request".to_string())),
             status if status.is_server_error() => Err(response::FcmError::ServerError(retry_after)),
-            _ => Err(response::FcmError::InvalidMessage(
-                "Unknown Error".to_string(),
-            )),
+            _ => Err(response::FcmError::InvalidMessage("Unknown Error".to_string())),
         }
     }
 }
