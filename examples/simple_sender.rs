@@ -1,8 +1,6 @@
-#[macro_use]
-extern crate serde_derive;
-
 use argparse::{ArgumentParser, Store};
 use fcm::{Client, MessageBuilder};
+use serde::Serialize;
 
 #[derive(Serialize)]
 struct CustomData {
