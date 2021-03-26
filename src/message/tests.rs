@@ -1,7 +1,7 @@
 use crate::notification::NotificationBuilder;
+use crate::{MessageBuilder, Priority};
 use serde_json;
 use std::borrow::Cow;
-use crate::{MessageBuilder, Priority};
 
 #[test]
 fn should_create_new_message() {
@@ -31,12 +31,9 @@ fn should_add_custom_data_to_the_payload() {
     struct CustomData {
         foo: &'static str,
         bar: bool,
-    };
+    }
 
-    let data = CustomData {
-        foo: "bar",
-        bar: false,
-    };
+    let data = CustomData { foo: "bar", bar: false };
 
     builder.data(&data).unwrap();
 

@@ -57,6 +57,7 @@ pub struct Notification<'a> {
 /// builder.body("3 runs to win in 1 ball");
 /// let notification = builder.finalize();
 /// ```
+#[derive(Default)]
 pub struct NotificationBuilder<'a> {
     title: Option<&'a str>,
     body: Option<&'a str>,
@@ -75,20 +76,7 @@ pub struct NotificationBuilder<'a> {
 impl<'a> NotificationBuilder<'a> {
     /// Get a new `NotificationBuilder` instance, with a title.
     pub fn new() -> NotificationBuilder<'a> {
-        NotificationBuilder {
-            title: None,
-            body: None,
-            icon: None,
-            sound: None,
-            badge: None,
-            tag: None,
-            color: None,
-            click_action: None,
-            body_loc_key: None,
-            body_loc_args: None,
-            title_loc_key: None,
-            title_loc_args: None,
-        }
+        Self::default()
     }
 
     // Set the title of the notification

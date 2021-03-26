@@ -1,6 +1,6 @@
 pub use chrono::{DateTime, Duration, FixedOffset};
-use std::error::Error;
 use std::fmt;
+use std::{error::Error, str::FromStr};
 
 /// A description of what went wrong with the push notification.
 /// Referred from [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/http-server-ref#table9)
@@ -151,10 +151,7 @@ impl Error for FcmError {}
 impl fmt::Display for FcmError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            FcmError::Unauthorized => write!(
-                f,
-                "authorization header missing or with invalid syntax in HTTP request"
-            ),
+            FcmError::Unauthorized => write!(f, "authorization header missing or with invalid syntax in HTTP request"),
             FcmError::InvalidMessage(ref s) => write!(f, "invalid message {}", s),
             FcmError::ServerError(_) => write!(f, "the server couldn't process the request"),
         }
@@ -176,15 +173,15 @@ pub enum RetryAfter {
     DateTime(DateTime<FixedOffset>),
 }
 
-impl RetryAfter {
-    pub fn from_str(header_value: &str) -> Option<RetryAfter> {
-        if let Ok(seconds) = header_value.parse::<i64>() {
-            Some(RetryAfter::Delay(Duration::seconds(seconds)))
-        } else {
-            DateTime::parse_from_rfc2822(header_value)
-                .map(|date_time| RetryAfter::DateTime(date_time))
-                .ok()
-        }
+impl FromStr for RetryAfter {
+    type Err = crate::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        s.parse::<i64>()
+            .map(Duration::seconds)
+            .map(RetryAfter::Delay)
+            .or_else(|_| DateTime::parse_from_rfc2822(s).map(RetryAfter::DateTime))
+            .map_err(|e| crate::Error::InvalidMessage(format!("{}", e)))
     }
 }
 
@@ -208,14 +205,8 @@ mod tests {
             ("InvalidTtl", ErrorReason::InvalidTtl),
             ("Unavailable", ErrorReason::Unavailable),
             ("InternalServerError", ErrorReason::InternalServerError),
-            (
-                "DeviceMessageRateExceeded",
-                ErrorReason::DeviceMessageRateExceeded,
-            ),
-            (
-                "TopicsMessageRateExceeded",
-                ErrorReason::TopicsMessageRateExceeded,
-            ),
+            ("DeviceMessageRateExceeded", ErrorReason::DeviceMessageRateExceeded),
+            ("TopicsMessageRateExceeded", ErrorReason::TopicsMessageRateExceeded),
             ("InvalidApnsCredential", ErrorReason::InvalidApnsCredential),
         ];
 
@@ -230,10 +221,7 @@ mod tests {
             let response_string = serde_json::to_string(&response_data).unwrap();
             let fcm_response: FcmResponse = serde_json::from_str(&response_string).unwrap();
 
-            assert_eq!(
-                Some(error_enum.clone()),
-                fcm_response.results.unwrap()[0].error,
-            );
+            assert_eq!(Some(error_enum.clone()), fcm_response.results.unwrap()[0].error,);
 
             assert_eq!(Some(error_enum), fcm_response.error,)
         }
@@ -241,21 +229,16 @@ mod tests {
 
     #[test]
     fn test_retry_after_from_seconds() {
-        assert_eq!(
-            Some(RetryAfter::Delay(Duration::seconds(420))),
-            RetryAfter::from_str("420")
-        );
+        assert_eq!(RetryAfter::Delay(Duration::seconds(420)), "420".parse().unwrap());
     }
 
     #[test]
     fn test_retry_after_from_date() {
         let date = "Sun, 06 Nov 1994 08:49:37 GMT";
-        let retry_after = RetryAfter::from_str(date);
+        let retry_after = RetryAfter::from_str(date).unwrap();
 
         assert_eq!(
-            Some(RetryAfter::DateTime(
-                DateTime::parse_from_rfc2822(date).unwrap()
-            )),
+            RetryAfter::DateTime(DateTime::parse_from_rfc2822(date).unwrap()),
             retry_after,
         );
     }
