@@ -34,7 +34,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  cargo-test-linux:
+  cargo-test:
     strategy:
       fail-fast: false
       matrix:
@@ -62,8 +62,6 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ matrix.rust }}
 
