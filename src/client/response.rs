@@ -1,6 +1,6 @@
 pub use chrono::{DateTime, Duration, FixedOffset};
-use std::fmt;
-use std::{error::Error, str::FromStr};
+use serde::Deserialize;
+use std::{error::Error, fmt, str::FromStr};
 
 /// A description of what went wrong with the push notification.
 /// Referred from [Firebase documentation](https://firebase.google.com/docs/cloud-messaging/http-server-ref#table9)

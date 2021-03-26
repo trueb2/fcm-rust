@@ -58,13 +58,6 @@
 //! # }
 //! ```
 
-#[allow(unused_imports)]
-#[macro_use]
-extern crate serde_json;
-
-#[macro_use]
-extern crate serde_derive;
-
 mod message;
 pub use crate::message::*;
 mod notification;

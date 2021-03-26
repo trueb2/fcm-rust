@@ -1,7 +1,14 @@
 use crate::notification::NotificationBuilder;
 use crate::{MessageBuilder, Priority};
-use serde_json;
+use serde::Serialize;
+use serde_json::json;
 use std::borrow::Cow;
+
+#[derive(Serialize)]
+struct CustomData {
+    foo: &'static str,
+    bar: bool,
+}
 
 #[test]
 fn should_create_new_message() {
@@ -26,12 +33,6 @@ fn should_leave_nones_out_of_the_json() {
 #[test]
 fn should_add_custom_data_to_the_payload() {
     let mut builder = MessageBuilder::new("api_key", "token");
-
-    #[derive(Serialize)]
-    struct CustomData {
-        foo: &'static str,
-        bar: bool,
-    }
 
     let data = CustomData { foo: "bar", bar: false };
 
