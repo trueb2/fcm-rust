@@ -1,5 +1,5 @@
 use argparse::{ArgumentParser, Store};
-use fcm::{Client, MessageBuilder};
+use fcm::{Client, MessageBuilder, NotificationBuilder};
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -25,12 +25,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     }
 
     let client = Client::new();
-    let data = CustomData { message: "howdy" };
 
-    let mut builder = MessageBuilder::new(&api_key, &device_token);
-    builder.data(&data)?;
+    let mut notif_builder = NotificationBuilder::new();
+    notif_builder.title("Hey!");
+    notif_builder.body("Hello from rust");
+    let mut msg_builder = MessageBuilder::new(&api_key, &device_token);
+    msg_builder.notification(notif_builder.finalize());
 
-    let response = client.send(builder.finalize()).await?;
+    let response = client.send(msg_builder.finalize()).await?;
     println!("Sent: {:?}", response);
 
     Ok(())
